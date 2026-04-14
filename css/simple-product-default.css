@@ -1,0 +1,67 @@
+/**
+ * Simple Product Default Styles
+ * Ensures simple products use standard WooCommerce styling
+ */
+
+/* Ensure simple product form uses default WooCommerce layout */
+body.single-product.product-type-simple form.cart {
+    /* Reset any custom styles */
+    display: block !important;
+    flex-direction: initial !important;
+    gap: initial !important;
+}
+
+/* Ensure quantity uses default WooCommerce styling */
+body.single-product.product-type-simple form.cart .quantity {
+    display: inline-block !important;
+    background: initial !important;
+    border-radius: initial !important;
+    padding: initial !important;
+    margin-bottom: initial !important;
+    box-shadow: initial !important;
+    min-width: initial !important;
+}
+
+/* Reset button styling to WooCommerce defaults */
+body.single-product.product-type-simple .single_add_to_cart_button {
+    /* Let WooCommerce handle button styling */
+    width: auto !important;
+}
+
+/* Hide any custom wrappers that might have been added */
+body.single-product.product-type-simple .wrap_cart_btns,
+body.single-product.product-type-simple .wrap_add_cart_btn,
+body.single-product.product-type-simple .wrap_cart_link_btn {
+    display: none !important;
+}
+
+/* Ensure price displays correctly */
+body.single-product.product-type-simple .price {
+    /* Use default WooCommerce price styling */
+    font-size: inherit !important;
+    font-weight: inherit !important;
+}
+
+/* Hide all addon-related elements for simple products */
+body.single-product.product-type-simple #limes-custom-addon-totals,
+body.single-product.product-type-simple .limes-addon-totals,
+body.single-product.product-type-simple #product-addons-total,
+body.single-product.product-type-simple .product-addon-totals,
+body.single-product.product-type-simple .wc-pao-addon-totals,
+body.single-product.product-type-simple .wc-pao-addons-container,
+body.single-product.product-type-simple .limes-final-price-label-only {
+    display: none !important;
+}
+
+/* Hide dimension fields for simple products */
+body.single-product.product-type-simple .wrap_dimensions,
+body.single-product.product-type-simple .wrap_mechanism_installation,
+body.single-product.product-type-simple .wrap_attrs {
+    display: none !important;
+}
+
+/* Hide custom price displays */
+body.single-product.product-type-simple .from_price,
+body.single-product.product-type-simple .wrap_from_price_whatsapp {
+    display: none !important;
+}

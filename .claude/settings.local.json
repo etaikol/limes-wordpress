@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(sed:*)",
+      "Bash(for file in main.js product-addons-integration.js progressive-field-control.js woocommerce-validation-fix.js)",
+      "Bash(do echo \"=== Checking /Users/diliyaguev/Downloads/limes-wordpress-master/js/$file ===\")",
+      "Bash(done)",
+      "Bash(for file in custom-addon-totals.js addon-section-controller-safe.js)",
+      "Bash(do echo \"=== Checking /Users/diliyaguev/Downloads/limes-wordpress-master/js/woocommerce/$file ===\")",
+      "Bash(for file in main.js product-addons-integration.js progressive-field-control.js woocommerce-validation-fix.js woocommerce/custom-addon-totals.js woocommerce/addon-section-controller-safe.js)",
+      "Bash(do echo \"=== Checking $file ===\")",
+      "Bash(cp:*)",
+      "Bash(wc:*)",
+      "Bash(mv:*)"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": false
+}

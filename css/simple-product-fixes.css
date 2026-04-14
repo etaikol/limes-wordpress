@@ -1,0 +1,27 @@
+/**
+ * Simple Product Fixes
+ * Hide elements that should not appear on simple products
+ */
+
+/* Hide addon totals on simple products */
+body.product-type-simple #limes-custom-addon-totals {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide the addon totals container completely */
+body.product-type-simple .limes-addon-totals {
+    display: none !important;
+}
+
+/* Hide WooCommerce addon totals on simple products */
+body.product-type-simple #product-addons-total,
+body.product-type-simple .product-addon-totals,
+body.product-type-simple .wc-pao-addon-totals {
+    display: none !important;
+}
+
+/* Ensure proper spacing for simple product add to cart */
+body.product-type-simple form.cart .wrap_cart_btns {
+    margin-top: 20px;
+}
