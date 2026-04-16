@@ -1,0 +1,111 @@
+/**
+ * Addon Visibility Fix
+ * Ensures addon containers remain visible at all times
+ */
+
+/* Force addon containers to be visible (except original totals) */
+.wc-pao-addons-container,
+.universal-addon-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Hide original product addon totals completely */
+#product-addons-total,
+#product-addons-total .product-addon-totals {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* Prevent hiding via any class combinations */
+.wc-pao-addons-container.hidden,
+.wc-pao-addons-container.disabled,
+.wc-pao-addons-container[style*="display: none"],
+.wc-pao-addons-container[style*="display:none"],
+#product-addons-total.hidden,
+#product-addons-total.disabled,
+#product-addons-total[style*="display: none"],
+#product-addons-total[style*="display:none"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure addon totals are visible when form has required fields */
+form.cart.dimensions-required .wc-pao-addons-container,
+form.cart.dimensions-required #product-addons-total,
+form.cart.dimensions-required .product-addon-totals,
+form.cart.price-calculated .wc-pao-addons-container,
+form.cart.price-calculated #product-addons-total,
+form.cart.price-calculated .product-addon-totals {
+    display: block !important;
+}
+
+/* Prevent field state from hiding addons */
+.wc-pao-addons-container[data-field-state="disabled"],
+.wc-pao-addons-container[data-field-state="hidden"] {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* Ensure proper spacing */
+.wc-pao-addons-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Stabilized form indicator */
+form.cart.addon-stabilized .wc-pao-addons-container {
+    transition: none !important;
+}
+
+/* Prevent animation glitches */
+.wc-pao-addons-container *,
+#product-addons-total * {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* Fix for loading overlay */
+.wc-pao-addons-container .addon-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Only show loading when actually loading */
+.wc-pao-addons-container:not(.loading-active) .addon-loading-overlay {
+    display: none !important;
+}
+
+/* Original product-addons-total is now completely hidden */
+/* Loading overlay is handled by custom-addon-totals.js */
+
+/* Fix duplicate container issues */
+.product-addon-totals + .product-addon-totals,
+#product-addons-total + #product-addons-total {
+    display: none !important;
+}
+
+/* Ensure proper RTL support */
+.rtl .wc-pao-addons-container,
+.rtl #product-addons-total {
+    direction: rtl;
+    text-align: right;
+}

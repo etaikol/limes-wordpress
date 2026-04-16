@@ -1,0 +1,183 @@
+/**
+ * Custom Multi-Select Dropdown Styles
+ */
+
+/* Wrapper */
+.custom-multi-select-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 0px;
+}
+
+/* Display element (the visible dropdown) */
+.custom-multi-select-display {
+    background-color: #fff;
+    border: 1px solid #030303;
+    border-radius: 0px;
+    padding: 10px 40px 10px 15px;
+    cursor: pointer;
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    /* Native select arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 9px 12px;
+    padding-left: 0px;
+}
+
+.custom-multi-select-display:hover {
+    border-color: #999;
+}
+
+.custom-multi-select-wrapper.open .custom-multi-select-display {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Selected text */
+.custom-multi-select-display .selected-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: black;
+    font-size: 15px;
+    font-family: Arial;
+}
+
+/* Hide the dropdown arrow span - we're using background image instead */
+.custom-multi-select-display .dropdown-arrow {
+    display: none;
+}
+
+/* Options container */
+.custom-multi-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #0073aa;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: -1px;
+}
+
+/* Individual option */
+.multi-select-option {
+    display: block;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0;
+}
+
+.multi-select-option label {
+    display: block;
+    padding: 10px 15px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.multi-select-option:last-child {
+    border-bottom: none;
+}
+
+.multi-select-option:hover {
+    background-color: #f5f5f5;
+}
+
+/* Checkbox styling */
+.multi-select-option input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* Option text */
+.multi-select-option span {
+    color: #333;
+    font-size: 14px;
+}
+
+/* Select all option */
+.multi-select-option.select-all {
+    font-weight: 600;
+    background-color: #fafafa;
+    padding: 10px 16px;
+}
+
+/* Option separator */
+.option-separator {
+    height: 1px;
+    background-color: #ddd;
+    margin: 0;
+}
+
+/* Safety: Hide any remaining original checkbox paragraphs */
+.wc-pao-addon.converted-to-dropdown p.wc-pao-addon-wrap {
+    display: none !important;
+}
+
+/* Hide original select elements when converted to multi-select */
+.wc-pao-addon.converted-to-multiselect select.wc-pao-addon-select {
+    display: none !important;
+}
+
+/* Ensure proper margin for converted addons */
+.wc-pao-addon.converted-to-dropdown .custom-multi-select-wrapper,
+.wc-pao-addon.converted-to-multiselect .custom-multi-select-wrapper {
+    margin-top: 0px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .custom-multi-select-display {
+        padding: 12px 35px 12px 12px;
+    }
+    
+    .custom-multi-select-options {
+        max-height: 250px;
+    }
+}
+
+/* RTL support */
+.rtl .custom-multi-select-display {
+    padding: 10px 15px 10px 40px;
+    background-position: left 3px center;
+}
+
+.rtl .multi-select-option input[type="checkbox"] {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+/* Match WooCommerce select styling */
+.woocommerce form .custom-multi-select-display {
+    height: 38px;
+    line-height: 1.5;
+}
+
+/* Disabled state */
+.wc-pao-addon[data-field-state="disabled"] .custom-multi-select-display {
+    background-color: white;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.wc-pao-addon[data-field-state="disabled"] .custom-multi-select-display:hover {
+    border-color: #ddd;
+}
+
+/* Progressive field control compatibility */
+.wrap_attrs[data-field-state="disabled"] .custom-multi-select-display {
+    pointer-events: none;
+    opacity: 0.6;
+}
