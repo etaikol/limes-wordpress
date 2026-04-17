@@ -6,7 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A custom WordPress theme named **Limes** for a Hebrew/RTL WooCommerce store (design business — curtains, seating, home textiles). Built on the Automattic Underscores (_s) starter theme and heavily customized for a single-store use case. Not meant to be reused as a parent theme.
 
-Active upgrade project is scoped in `../שדרוג אתר לימס.pdf` (cart UX, category page, product page). Work happens on the `upload-project` branch.
+Active upgrade project is scoped in `../שדרוג אתר לימס.pdf` (cart UX, category page, product page). Work happens on the `dev` branch.
+
+## Session state (last updated 2026-04-18)
+
+- **Branch:** `dev` (pushed to `origin/dev`). `upload-project` exists but is not being used. `main` is the eventual production target.
+- **Last commit:** `d5047c4` — "UX upgrades: banner variants, category cleanup, zoom fix, mechanism toggle". 4 Tier-1 items shipped in a single commit.
+- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`). Not Claude's changes — from a prior composer install. Leave alone unless re-running composer is desired.
+- **Not yet SFTP-uploaded to dev:** All 4 shipped files are committed but may not all be live on the dev site yet. Staged upload plan: (1) banner = `template-parts/top-inner.php` + `css/style.css`; (2) zoom = `header.php`; (3) category page = `woocommerce/taxonomy-product_cat.php` (CSS already covered in #1); (4) mechanism toggle = `inc/features/category-mechanism-toggle.php` + `functions.php` + `inc/woo-product-page.php` + CSS (covered in #1). After stage 4, mom must enable the ACF "הסתר שדה צד מנגנון" checkbox on the וילון בד category in wp-admin for the render guard to activate.
+- **Pending mom decision:** Banner variant A / B / C. Reworked 2026-04-18 after first-pass feedback — default is now A (refined brown, modernized legacy: smaller than old slab, grid layout with breadcrumb right + title centered). B = minimal white strip (was A). C = picture background (was B). Re-upload `template-parts/top-inner.php` + `css/style.css` to dev. Once picked, flip `$default_variant` in `template-parts/top-inner.php`, delete losing branches + their CSS blocks, and remove the `?banner=legacy` rollback.
 
 ## Upgrade mission list
 
@@ -14,12 +22,8 @@ This is the working backlog for the current upgrade project, ordered by ROI (imp
 
 ### Tier 1 — quick wins (hours each)
 
-- [x] **Shrink the brown `top-inner` banner** — _shipped as A/B/legacy variant switcher in `template-parts/top-inner.php` via `?banner=` query param; default `a` is the inline breadcrumb + content-flow H1 (no brown slab). Variant `b` is a 96px strip with WC category-image background. Once mom picks, flip `$default_variant` and delete the losers + their CSS blocks._
 - [ ] **Slide-in side-cart on "Add to cart"** — _Impact: Very high · Difficulty: Low–Med_
-  PDF spec 1.b. `woocommerce/cart/mini-cart.php` already exists; wire a fragments drawer triggered on the `added_to_cart` JS event. Biggest conversion lever in the whole backlog.
-- [x] **Slim the product card on the shop grid** — _On inspection the tile itself was already clean (heart + image + title + price + button, no repeated category or Q&A badges). Real problem was the "בואו להתרשם / מוצרים בקטגוריה" decorative title + long term description pushing products ~400px below the fold. Shipped in `woocommerce/taxonomy-product_cat.php` + `css/style.css`: deleted decorative section-title, moved category description below the product grid as `.section-subtitle--below-products`, added `.leading-products--category` modifier for tight top padding. Satisfies PDF spec 2.b. Grid is already `33.33%` per box (3-per-row) on desktop — no change needed there._
-- [x] **Conditional "צד מנגנון" field** — _Scoped per-category per mom. New file `inc/features/category-mechanism-toggle.php` registers an ACF true/false checkbox "הסתר שדה צד מנגנון במוצרי הקטגוריה" on every product_cat edit screen + exposes `limes_product_hides_mechanism_side($product_id)` helper. Render guard wraps `.wrap_mechanism` in `inc/woo-product-page.php:299`; validation guard in the dimension-validation function (same file) skips requiring the radio when hidden. CSS in `css/style.css` gives `.wrap_installation` full width when mechanism is absent. Mom enables it per-category via Products → Categories → edit (e.g. וילון בד). No product-level edits needed._
-- [x] **Disable/limit the body-zoom hack on small desktops** — _`header.php:20` — bumped `minZoom` from `0.1` to `1`. Viewports below 1920 no longer shrink; only >1920 monitors still scale up (original intent preserved). Unlocks pixel-accurate CSS on 1366/1440/1536 laptops._
+  PDF spec 1.b. `woocommerce/cart/mini-cart.php` already exists; wire a fragments drawer triggered on the `added_to_cart` JS event. Biggest conversion lever in the whole backlog. **This is the next task to pick up.**
 
 ### Tier 2 — medium effort (1–3 days each)
 
@@ -43,7 +47,12 @@ This is the working backlog for the current upgrade project, ordered by ROI (imp
 
 ### Done
 
-_(Nothing yet. Move completed items here with commit SHA and a one-liner about what actually shipped, e.g. `[x] Banner shrink — 1c26fa3 — padding 35→12px, title 60→32px`. Keeps the active list short.)_
+All 4 items below shipped in commit `d5047c4` on branch `dev`. Not yet SFTP-uploaded to dev in full — see "Session state" above for the staged upload plan.
+
+- [x] **Banner shrink — A/B/C/legacy variant switcher** — `d5047c4` + reworked 2026-04-18 — `template-parts/top-inner.php` with `?banner=a|b|c|legacy`. Default `a` = refined brown banner (modernized legacy): `#B29076` with subtle light→dark gradient overlay + `rgba(255,255,255,0.14)` hairline bottom border, grid layout `1fr auto 1fr` (breadcrumb pinned RTL-start/right, title centered, empty column for balance), `padding: 30px 0`, 32px/700 title, 14px/500 breadcrumb (`.page-head--modern`). `b` = minimal white strip with same grid layout, 30px dark title `#2B2723`, muted beige breadcrumb (`.page-head--inline`). `c` = 110px compact strip, uses WC category `thumbnail_id` as bg image with dark gradient overlay when present, falls back to `#B29076` solid (`.page-head--compact`). `legacy` = original 150px banner intact for rollback. CSS blocks in `css/style.css` labeled "Page head — Variant A/B/C". **Pending:** mom picks A, B or C → flip `$default_variant`, delete losing variants + legacy + switcher code.
+- [x] **Product card / category layout cleanup** — `d5047c4` — `woocommerce/taxonomy-product_cat.php`: deleted the decorative "בואו להתרשם / מוצרים בקטגוריה" section-title block above products; moved `term_description()` to render below the product grid inside `.section-subtitle--below-products`; added `.leading-products--category` modifier for tight top padding (24px). CSS in `css/style.css`. Product tile itself was already clean — the real culprit was ~400px of marketing copy above the fold. Satisfies PDF spec 2.b. Only affects the `!$tapet_cat_type` path (standard categories); filtered/tapet categories unchanged.
+- [x] **Conditional "צד מנגנון" (mechanism side) field — per-category** — `d5047c4` — New file `inc/features/category-mechanism-toggle.php` registers an ACF true/false checkbox (`field_limes_hide_mechanism_side` / name `hide_mechanism_side`, field group "הגדרות קטגוריה — לימס") on every `product_cat` edit screen, + exposes helper `limes_product_hides_mechanism_side($product_id)` returning true if ANY of the product's categories has the flag set. Wired into `functions.php` under "Load Feature Files". Render guard wraps `.wrap_mechanism` div (only, not `.wrap_installation`) in `inc/woo-product-page.php` ~line 299, adds `mech-hidden` class on parent wrapper. Validation guard in dimension-validation function (same file, ~line 877) skips requiring the radio when hidden — no "נא לבחור צד מנגנון" error fires. CSS: `.wrap_mechanism_installation.mech-hidden .wrap_installation { width: 100%; }` + `:only-child` fallback. Satisfies PDF spec 3.b. **Mom must enable the checkbox on the וילון בד category (and any other fabric-curtain-like category) in wp-admin for it to take effect.** No product-level edits needed. תוספות + בחר גוון remain untouched.
+- [x] **Body-zoom hack neutralized on small desktops** — `d5047c4` — `header.php:20` — `const minZoom = 0.1` → `const minZoom = 1`. Below-1920 viewports no longer shrink the whole body; >1920 monitors still scale up (original intent preserved). Unlocks pixel-accurate CSS on 1366 / 1440 / 1536 laptops. Comment on the line explains why.
 
 ## Deploy + dev loop
 
@@ -148,5 +157,5 @@ When changing product or cart behavior, the template override in `woocommerce/` 
 ## Branches
 
 - `main`, `dev`, `upload-project` exist locally and on origin
-- Active work is on `upload-project`
+- **Active work is on `dev`** (last session pushed `d5047c4` there). `upload-project` is stale — ignore unless the user explicitly asks to use it.
 - Production deploy path is not yet established — treat all merges to `main` as "we're about to push to the live site" and ask the user before doing so.
