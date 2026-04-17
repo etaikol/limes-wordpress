@@ -37,14 +37,20 @@
 
 <?php if ($banner_variant === 'a') : ?>
 
-	<section class="page-head page-head--modern">
-		<div class="section-inner">
-			<div class="breadcrumbs">
-				<?php if (function_exists('yoast_breadcrumb')) { yoast_breadcrumb(''); } ?>
+	<div class="page-head-wrap--modern">
+		<div class="breadcrumbs-bar">
+			<div class="section-inner">
+				<div class="breadcrumbs">
+					<?php if (function_exists('yoast_breadcrumb')) { yoast_breadcrumb(''); } ?>
+				</div>
 			</div>
-			<<?=$title_tag?> class="title"><span><?=$page_title?></span></<?=$title_tag?>>
 		</div>
-	</section>
+		<section class="page-head page-head--modern">
+			<div class="section-inner">
+				<<?=$title_tag?> class="title"><span><?=$page_title?></span></<?=$title_tag?>>
+			</div>
+		</section>
+	</div>
 
 <?php elseif ($banner_variant === 'b') : ?>
 
