@@ -1520,14 +1520,14 @@ section.top-inner {
 /* --------------------- /Section top-inner ---------------------- */
 
 /* ---------------------- Page head — Variant A (slim brown band + breadcrumb strip — DEFAULT) ---------------------- */
-/* Breadcrumb lives OUTSIDE the brown in a thin white strip above it. Brown band is title-only, slim & centered. */
+/* Editorial header: thin white breadcrumb strip + slim brown band with radial vignette, flanking hairlines, and soft gradient underline. */
 .page-head-wrap--modern {
   width: 100%; }
   .page-head-wrap--modern .breadcrumbs-bar {
     background: #fff;
     border-bottom: 1px solid #EFE7DD; }
     .page-head-wrap--modern .breadcrumbs-bar .section-inner {
-      padding: 10px 0;
+      padding: 8px 0;
       display: flex;
       justify-content: flex-start; }
     .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs {
@@ -1548,34 +1548,74 @@ section.top-inner {
         color: #5A4C41;
         font-weight: 600; }
 .page-head--modern {
+  position: relative;
   background-color: #B29076;
-  background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.05) 100%);
+  background-image: radial-gradient(ellipse 140% 120% at 50% 40%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.08) 100%);
   color: #fff;
-  text-align: center; }
+  text-align: center;
+  overflow: hidden; }
+  .page-head--modern::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%); }
+  .page-head--modern::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%); }
   .page-head--modern .section-inner {
-    padding: 18px 0; }
+    padding: 10px 0;
+    position: relative;
+    z-index: 1; }
   .page-head--modern .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Assistant', sans-serif;
-    font-weight: 700;
-    font-size: 26px;
+    font-weight: 600;
+    font-size: 22px;
     line-height: 1.2;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.6px;
     margin: 0;
-    color: #fff; }
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+    .page-head--modern .title::before,
+    .page-head--modern .title::after {
+      content: '';
+      flex: 0 0 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); }
+    .page-head--modern .title::before {
+      margin-left: 18px; }
+    .page-head--modern .title::after {
+      margin-right: 18px; }
+    .page-head--modern .title span {
+      display: inline-block;
+      padding: 0 2px; }
   @media only screen and (max-width: 1200px) {
     .page-head--modern .section-inner {
-      padding: 16px 0; }
+      padding: 9px 0; }
     .page-head--modern .title {
-      font-size: 24px; } }
+      font-size: 20px; }
+    .page-head--modern .title::before,
+    .page-head--modern .title::after {
+      flex: 0 0 28px; } }
   @media only screen and (max-width: 950px) {
     .page-head-wrap--modern .breadcrumbs-bar .section-inner {
-      padding: 8px 0; }
+      padding: 6px 0; }
     .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs {
       font-size: 11px; }
     .page-head--modern .section-inner {
-      padding: 12px 0; }
+      padding: 9px 0; }
     .page-head--modern .title {
-      font-size: 20px; } }
+      font-size: 18px;
+      letter-spacing: 0.3px; }
+    .page-head--modern .title::before,
+    .page-head--modern .title::after {
+      display: none; } }
 
 /* ---------------------- Page head — Variant B (minimal white, inline) ---------------------- */
 .page-head--inline {
