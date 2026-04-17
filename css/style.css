@@ -824,6 +824,26 @@ section.leading-products .boxes {
   justify-content: center;
   margin: -22px;
   margin-top: 45px; }
+
+/* Category pages — products show immediately, description sits below */
+section.leading-products--category .boxes {
+  margin-top: 0; }
+section.leading-products--category {
+  padding-top: 24px; }
+.section-subtitle--below-products {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid #EFE7DD;
+  font-family: 'Assistant', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4B4B4B; }
+@media only screen and (max-width: 950px) {
+  section.leading-products--category { padding-top: 14px; }
+  .section-subtitle--below-products {
+    margin-top: 40px;
+    padding-top: 24px;
+    font-size: 14px; } }
   section.leading-products .boxes .box {
     width: 33.33%;
     padding: 22px; }
@@ -1498,6 +1518,103 @@ section.top-inner {
         font-size: 14px; } }
 
 /* --------------------- /Section top-inner ---------------------- */
+
+/* ---------------------- Page head — Variant A (inline, no banner) ---------------------- */
+.page-head--inline {
+  background: #fff;
+  border-bottom: 1px solid #EFE7DD; }
+  .page-head--inline .section-inner {
+    padding: 14px 0 22px; }
+  .page-head--inline .breadcrumbs {
+    font-family: 'Assistant', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: #9A8370;
+    margin-bottom: 10px;
+    letter-spacing: 0.2px; }
+    .page-head--inline .breadcrumbs a {
+      color: #9A8370;
+      text-decoration: none; }
+      .page-head--inline .breadcrumbs a:hover {
+        color: #B29076; }
+  .page-head--inline .title {
+    font-family: 'Assistant', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0;
+    color: #2B2723; }
+  @media only screen and (max-width: 950px) {
+    .page-head--inline .section-inner {
+      padding: 10px 0 14px; }
+    .page-head--inline .breadcrumbs {
+      font-size: 12px;
+      margin-bottom: 6px; }
+    .page-head--inline .title {
+      font-size: 24px; } }
+
+/* ---------------------- Page head — Variant B (compact strip + category image) ---------------------- */
+.page-head--compact {
+  position: relative;
+  min-height: 96px;
+  padding: 0;
+  color: #fff;
+  background-color: #B29076;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  align-items: center; }
+  .page-head--compact .page-head__overlay {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: linear-gradient(270deg, rgba(40, 30, 22, 0.60) 0%, rgba(40, 30, 22, 0.30) 100%);
+    z-index: 1; }
+  .page-head--compact .section-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%; }
+  .page-head--compact .title {
+    font-family: 'Assistant', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0;
+    color: #fff; }
+  .page-head--compact .breadcrumbs {
+    font-family: 'Assistant', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0; }
+    .page-head--compact .breadcrumbs a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none; }
+      .page-head--compact .breadcrumbs a:hover {
+        color: #fff; }
+  @media only screen and (max-width: 950px) {
+    .page-head--compact {
+      min-height: 72px;
+      padding: 12px 0; }
+      .page-head--compact .section-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px; }
+      .page-head--compact .title {
+        font-size: 22px; }
+      .page-head--compact .breadcrumbs {
+        font-size: 12px; } }
+/* --------------------- /Page head variants ---------------------- */
+
+/* Product form: when a category hides "צד מנגנון", let "בחר סוג התקנה" fill the row */
+.wrap_mechanism_installation.mech-hidden .wrap_installation {
+  width: 100%; }
+.wrap_mechanism_installation .wrap_installation:only-child {
+  width: 100%; }
 /* ---------------------- Section product ---------------------- */
 section.product .parts .part:nth-child(1) .part-top {
   display: block; }

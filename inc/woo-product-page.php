@@ -295,8 +295,12 @@ function my_custom_instalations_fields() {
 
 	// --- Conditional Mechanism/Installation Section ---
 	// Only show if the product type is NOT 'roll'
-	if ( $product_type_dimensions !== 'roll' ) : ?>
-<div class="wrap_mechanism_installation">
+	if ( $product_type_dimensions !== 'roll' ) :
+		$hide_mechanism_side = function_exists( 'limes_product_hides_mechanism_side' )
+			&& limes_product_hides_mechanism_side( $product_id );
+	?>
+<div class="wrap_mechanism_installation<?php echo $hide_mechanism_side ? ' mech-hidden' : ''; ?>">
+    <?php if ( ! $hide_mechanism_side ) : ?>
     <div class="wrap_mechanism">
         <div class="wrap_title">
             <span>*בחר צד מנגנון: <span class="must">(שדה חובה)</span></span>
@@ -337,6 +341,7 @@ function my_custom_instalations_fields() {
             </label>
         </div>
     </div>
+    <?php endif; ?>
     <div class="wrap_installation">
         <div class="wrap_title">
             <span>*בחר סוג התקנה <span class="must">(שדה חובה)</span></span>
@@ -874,12 +879,18 @@ function ensure_all_required_fields_in_add_to_cart($valid, $product_id, $quantit
                 $errors[] = __('נא להזין גובה תקין.', 'woocommerce');
             }
             
-            // Check if mechanism field exists on the form before requiring it
-            $has_mechanism_field = isset($_POST['prod_radio-gr2']) || 
-                                  (isset($_POST['wc_pao_addon_field']) && is_array($_POST['wc_pao_addon_field']));
-            
-            if ($has_mechanism_field && empty($_POST['prod_radio-gr2'])) {
-                $errors[] = __('נא לבחור צד מנגנון.', 'woocommerce');
+            // Mechanism side is hidden per-category (PDF spec 3.b) — skip validation if so.
+            $mechanism_hidden_for_category = function_exists( 'limes_product_hides_mechanism_side' )
+                && limes_product_hides_mechanism_side( $parent_product->get_id() );
+
+            if ( ! $mechanism_hidden_for_category ) {
+                // Check if mechanism field exists on the form before requiring it
+                $has_mechanism_field = isset($_POST['prod_radio-gr2']) ||
+                                      (isset($_POST['wc_pao_addon_field']) && is_array($_POST['wc_pao_addon_field']));
+
+                if ($has_mechanism_field && empty($_POST['prod_radio-gr2'])) {
+                    $errors[] = __('נא לבחור צד מנגנון.', 'woocommerce');
+                }
             }
             
             // Check if installation field exists on the form before requiring it

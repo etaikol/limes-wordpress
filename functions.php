@@ -43,6 +43,7 @@ require_once get_template_directory() . '/inc/templates/blog-templates.php';
  * Load Feature Files
  */
 require_once get_template_directory() . '/inc/features/breadcrumbs.php';
+require_once get_template_directory() . '/inc/features/category-mechanism-toggle.php';
 
 /**
  * Load WooCommerce Integration

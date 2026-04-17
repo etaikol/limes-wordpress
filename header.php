@@ -17,7 +17,7 @@
 	(function() {
     const baseWidth = 1920; // Base width in pixels
     const maxZoom = 2; // Maximum zoom factor (200%)
-    const minZoom = 0.1; // Minimum zoom factor (10%)
+    const minZoom = 1; // Never scale DOWN — only scale up on >1920px monitors. Prevents laptop shrinking that breaks pixel-accurate CSS.
     const preserveClasses = ['fancybox-container']; // Classes for elements that should maintain original size
     let styleSheet = null;
     
