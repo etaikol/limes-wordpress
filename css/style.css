@@ -1547,7 +1547,9 @@ section.top-inner {
       .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs .breadcrumb_last {
         color: #5A4C41;
         font-weight: 600; }
+section.page-head--modern,
 .page-head--modern {
+  padding: 0 !important;
   position: relative;
   background-color: #B29076;
   background-image: radial-gradient(ellipse 140% 120% at 50% 40%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.08) 100%);
