@@ -1554,7 +1554,7 @@ section.page-head--modern,
     height: 1px;
     background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%); }
   .page-head--modern .section-inner {
-    padding: 40px 0;
+    padding: 26px 0;
     position: relative;
     z-index: 1; }
   .page-head--modern .title {
