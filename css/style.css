@@ -1501,24 +1501,29 @@ section.top-inner {
 
 /* ---------------------- Page head — Variant A (slim brown band + breadcrumb strip — DEFAULT) ---------------------- */
 /* Editorial header: thin white breadcrumb strip + slim brown band with radial vignette, flanking hairlines, and soft gradient underline. */
+/* Halve the gap between the breadcrumb strip and the next section ("בואו להתרשם" etc.) */
+.page-head-wrap--modern + section,
+.page-head-wrap--modern ~ section.leading-products {
+  padding-top: 38px; }
 .page-head-wrap--modern {
-  width: 100%; }
+  width: 100%;
+  margin-top: 10px; }
   .page-head-wrap--modern .breadcrumbs-bar {
     background: transparent;
     border-bottom: 1px solid #EFE7DD; }
     .page-head-wrap--modern .breadcrumbs-bar .section-inner {
-      padding: 8px 0 7px;
+      padding: 22px 90px 18px 0;
       display: flex;
       justify-content: flex-start; }
     .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs {
       font-family: 'Assistant', sans-serif;
       font-weight: 500;
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.4;
       letter-spacing: 0.2px;
-      color: #8A7868; }
+      color: #6B5B4F; }
       .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs a {
-        color: #8A7868;
+        color: #6B5B4F;
         text-decoration: none;
         transition: color 0.2s ease; }
         .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs a:hover {
@@ -1549,7 +1554,7 @@ section.page-head--modern,
     height: 1px;
     background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%); }
   .page-head--modern .section-inner {
-    padding: 13px 0;
+    padding: 40px 0;
     position: relative;
     z-index: 1; }
   .page-head--modern .title {
@@ -1579,7 +1584,7 @@ section.page-head--modern,
       padding: 0 2px; }
   @media only screen and (max-width: 1200px) {
     .page-head--modern .section-inner {
-      padding: 9px 0; }
+      padding: 28px 0; }
     .page-head--modern .title {
       font-size: 20px; }
     .page-head--modern .title::before,
@@ -1587,11 +1592,11 @@ section.page-head--modern,
       flex: 0 0 28px; } }
   @media only screen and (max-width: 950px) {
     .page-head-wrap--modern .breadcrumbs-bar .section-inner {
-      padding: 6px 0; }
+      padding: 12px 20px 10px 0; }
     .page-head-wrap--modern .breadcrumbs-bar .breadcrumbs {
       font-size: 11px; }
     .page-head--modern .section-inner {
-      padding: 9px 0; }
+      padding: 20px 0; }
     .page-head--modern .title {
       font-size: 18px;
       letter-spacing: 0.3px; }
@@ -1715,6 +1720,63 @@ section.page-head--modern,
         grid-column: 1;
         font-size: 22px; } }
 /* --------------------- /Page head variants ---------------------- */
+
+/* ---------------------- Product card image lightbox (category/shop loops) ---------------------- */
+ul.products li.product a img { cursor: zoom-in; }
+body.limes-lightbox-open { overflow: hidden; }
+.limes-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 99999;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  animation: limes-lb-fade 0.18s ease-out; }
+  .limes-lightbox.is-open {
+    display: flex; }
+  .limes-lightbox__inner {
+    max-width: 92vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .limes-lightbox__img {
+    max-width: 92vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.55);
+    border-radius: 4px; }
+  .limes-lightbox__close {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    width: 46px;
+    height: 46px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s ease, transform 0.18s ease; }
+    .limes-lightbox__close:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05); }
+@keyframes limes-lb-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; } }
+/* --------------------- /Product card image lightbox ---------------------- */
 
 /* Product form: when a category hides "צד מנגנון", let "בחר סוג התקנה" fill the row */
 .wrap_mechanism_installation.mech-hidden .wrap_installation {

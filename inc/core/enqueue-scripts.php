@@ -42,6 +42,11 @@ function limes_enqueue_scripts() {
         if (function_exists('is_cart') && (is_cart() || is_checkout())) {
             wp_enqueue_script('wc-cart');
         }
+
+        // Click-to-enlarge image lightbox on shop/category product loops
+        if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag())) {
+            wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '1.0.0', true);
+        }
     }
     
     // Product-specific scripts
