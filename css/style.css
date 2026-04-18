@@ -316,7 +316,9 @@ header {
   header .ham-button {
     display: none; }
   header .logo-wrapper {
-    display: block; }
+    display: block;
+    position: relative;
+    z-index: 100000; }
     header .logo-wrapper .logo {
       position: relative;
       display: inline-block;
@@ -1554,7 +1556,7 @@ section.page-head--modern,
     height: 1px;
     background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%); }
   .page-head--modern .section-inner {
-    padding: 26px 0;
+    padding: 27px 0;
     position: relative;
     z-index: 1; }
   .page-head--modern .title {
@@ -1722,6 +1724,7 @@ section.page-head--modern,
 /* --------------------- /Page head variants ---------------------- */
 
 /* ---------------------- Product card image lightbox (category/shop loops) ---------------------- */
+.box-product a.image img,
 ul.products li.product a img { cursor: zoom-in; }
 body.limes-lightbox-open { overflow: hidden; }
 .limes-lightbox {

@@ -62,7 +62,7 @@
 		$('body').removeClass('limes-lightbox-open');
 	}
 
-	$(document).on('click', 'ul.products li.product a img', function (e) {
+	$(document).on('click', '.box-product a.image img, ul.products li.product a img', function (e) {
 		var $img = $(this);
 		e.preventDefault();
 		e.stopPropagation();
