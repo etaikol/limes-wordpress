@@ -10,10 +10,11 @@ Active upgrade project is scoped in `../שדרוג אתר לימס.pdf` (cart UX
 
 ## Session state (last updated 2026-04-18)
 
-- **Branch:** `dev`. Ahead of `origin/dev` by 4 local commits (`53e06f8`, `594b9c1`, `fceb436`, and the cursor-polish commit from this session). Run `git push` when ready.
-- **Last commit:** cursor polish — product card image cursor switched from `zoom-in` to `pointer` (finger-hand). Banner v7 at symmetric `padding: 27px 0` after iterative sizing with Etai.
-- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`) + `woocommerce/taxonomy-product_cat.php` (the 2026-04-18 partial restore that was documented in the Done section but never committed — left unstaged on purpose to keep this session's commits tight).
-- **Not yet SFTP-uploaded in full:** The 4 touched files this session = `css/style.css`, `js/product-card-lightbox.js` (new), `inc/core/enqueue-scripts.php`, `template-parts/top-inner.php`. Banner changes + lightbox CSS + logo z-index are all in `css/style.css`.
+- **Branch:** `dev`. In sync with `origin/dev` — everything through `f7ba933` is pushed.
+- **Last commit:** `f7ba933` — category page: restored "בואו להתרשם" overline + term description above the product grid (the 2026-04-18 partial-restore that had been documented in Done but not committed).
+- **Prior pushed commits this arc:** `6b007d5` (lightbox hover overlay + expand icon, no zoom cursor), `fceb436` (lightbox selector fix + logo z-index), `594b9c1` (banner v7 symmetric 27px).
+- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`). Unrelated composer drift — ignore. Also `.claude/settings.local.json` + `claude/` are now gitignored (Etai dropped friend-shared CLAUDE.md templates in `claude/`).
+- **Not yet SFTP-uploaded in full:** The 4 touched files from the polish arc = `css/style.css`, `js/product-card-lightbox.js` (new), `inc/core/enqueue-scripts.php`, `template-parts/top-inner.php`. Banner changes + lightbox CSS + logo z-index are all in `css/style.css`.
 - **Pending mom decision:** Banner variant A / B / C (A is current default). Once picked, flip `$default_variant` in `template-parts/top-inner.php`, delete losing branches + their CSS blocks, and remove the `?banner=legacy` rollback.
 
 ## Upgrade mission list

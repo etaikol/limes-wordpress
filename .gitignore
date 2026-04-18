@@ -39,6 +39,10 @@ wp-config.php
 .vscode/
 .idea/
 
+# Claude Code local artifacts — per-machine notes, friend-shared templates, etc.
+/claude/
+.claude/settings.local.json
+
 # All plugins
 #
 # Note: If you wish to whitelist plugins,
