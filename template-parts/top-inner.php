@@ -38,6 +38,11 @@
 <?php if ($banner_variant === 'a') : ?>
 
 	<div class="page-head-wrap--modern">
+		<section class="page-head page-head--modern">
+			<div class="section-inner">
+				<<?=$title_tag?> class="title"><span><?=$page_title?></span></<?=$title_tag?>>
+			</div>
+		</section>
 		<div class="breadcrumbs-bar">
 			<div class="section-inner">
 				<div class="breadcrumbs">
@@ -45,11 +50,6 @@
 				</div>
 			</div>
 		</div>
-		<section class="page-head page-head--modern">
-			<div class="section-inner">
-				<<?=$title_tag?> class="title"><span><?=$page_title?></span></<?=$title_tag?>>
-			</div>
-		</section>
 	</div>
 
 <?php elseif ($banner_variant === 'b') : ?>
