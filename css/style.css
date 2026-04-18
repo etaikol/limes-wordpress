@@ -1723,7 +1723,7 @@ section.page-head--modern,
         font-size: 22px; } }
 /* --------------------- /Page head variants ---------------------- */
 
-/* ---------------------- Product card image lightbox (category/shop loops) ---------------------- */
+/* ---------------------- Product card image lightbox (category/shop loops + color swatches) ---------------------- */
 .box-product a.image,
 ul.products li.product a { position: relative; }
 .box-product a.image img,
@@ -1754,6 +1754,26 @@ ul.products li.product a.image::after {
 ul.products li.product a.image:hover::after {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1); }
+
+/* Color-swatch hover tooltip: expand affordance (product page) */
+.wrap_attrs .tooltip_img {
+  position: relative;
+  cursor: zoom-in; }
+.wrap_attrs .tooltip_img img { display: block; }
+.wrap_attrs .tooltip_img::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 6px;
+  width: 22px; height: 22px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M15 3h6v6'/><path d='M9 21H3v-6'/><path d='M21 3l-7 7'/><path d='M3 21l7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  opacity: 0.9; }
+
 body.limes-lightbox-open { overflow: hidden; }
 .limes-lightbox {
   display: none;
@@ -1769,20 +1789,31 @@ body.limes-lightbox-open { overflow: hidden; }
   .limes-lightbox.is-open {
     display: flex; }
   .limes-lightbox__inner {
-    max-width: 92vw;
-    max-height: 90vh;
+    position: relative;
+    width: 92vw;
+    height: 82vh;
+    overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center; }
+    justify-content: center;
+    touch-action: none; }
   .limes-lightbox__img {
-    max-width: 92vw;
-    max-height: 90vh;
+    max-width: 100%;
+    max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
     display: block;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.55);
-    border-radius: 4px; }
+    border-radius: 4px;
+    transform-origin: center center;
+    transition: transform 0.08s linear;
+    user-select: none;
+    -webkit-user-drag: none; }
+  .limes-lightbox__img.is-zoomed { cursor: grab; }
+  .limes-lightbox__img.is-dragging {
+    cursor: grabbing;
+    transition: none; }
   .limes-lightbox__close {
     position: absolute;
     top: 20px;
@@ -1800,10 +1831,82 @@ body.limes-lightbox-open { overflow: hidden; }
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
     transition: background 0.18s ease, transform 0.18s ease; }
     .limes-lightbox__close:hover {
       background: rgba(255, 255, 255, 0.25);
       transform: scale(1.05); }
+
+  /* Zoom bar: bottom-center, pill-shaped, glassy */
+  .limes-lightbox__zoombar {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: #fff;
+    z-index: 2;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px); }
+  .limes-lightbox__btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease; }
+    .limes-lightbox__btn:hover {
+      background: rgba(255, 255, 255, 0.24); }
+  .limes-lightbox__range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 180px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    cursor: pointer;
+    margin: 0;
+    padding: 0; }
+    .limes-lightbox__range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25); }
+    .limes-lightbox__range::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer; }
+  .limes-lightbox__val {
+    min-width: 46px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px; }
+@media (max-width: 600px) {
+  .limes-lightbox__zoombar { gap: 6px; padding: 8px 12px; }
+  .limes-lightbox__btn { width: 28px; height: 28px; font-size: 16px; }
+  .limes-lightbox__range { width: 110px; }
+  .limes-lightbox__val { min-width: 38px; font-size: 12px; } }
 @keyframes limes-lb-fade {
   from { opacity: 0; }
   to   { opacity: 1; } }
@@ -2506,3 +2609,30 @@ section.categories-inner .boxes {
   @media only screen and (max-width: 1200px) {
     .box-category .image {
       height: 200px; } }
+
+/* ---------------------- Accessibility widget reposition (Ally / Pojo a11y) ---------------------- */
+/* Plugin "Ally - Web Accessibility & Usability" v3.8.1 (Elementor, formerly Pojo Accessibility).
+   Default placement is fixed mid-height on the right edge, which overlaps scrolled content
+   (breadcrumbs, product text). Pin to the visual LEFT-bottom instead: clears the content flow
+   and avoids collision with the Click-to-Chat WhatsApp button anchored bottom-right. */
+.pojo-a11y-toolbar-toggle,
+#pojo-a11y-toolbar-toggle,
+.pojo-a11y-toolbar,
+[class*="a11y-toolbar-toggle"] {
+  position: fixed !important;
+  top: auto !important;
+  bottom: 20px !important;
+  right: auto !important;
+  left: 14px !important;
+  z-index: 9998 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important; }
+@media only screen and (max-width: 950px) {
+  .pojo-a11y-toolbar-toggle,
+  #pojo-a11y-toolbar-toggle,
+  .pojo-a11y-toolbar,
+  [class*="a11y-toolbar-toggle"] {
+    bottom: 14px !important;
+    left: 10px !important; } }
+/* --------------------- /Accessibility widget reposition ---------------------- */

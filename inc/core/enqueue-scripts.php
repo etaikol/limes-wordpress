@@ -43,9 +43,9 @@ function limes_enqueue_scripts() {
             wp_enqueue_script('wc-cart');
         }
 
-        // Click-to-enlarge image lightbox on shop/category product loops
-        if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag())) {
-            wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '1.0.0', true);
+        // Click-to-enlarge image lightbox (zoom + pan). Loops: product cards. Product page: color-swatch tooltip.
+        if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag() || is_product())) {
+            wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '2.1.0', true);
         }
     }
     
