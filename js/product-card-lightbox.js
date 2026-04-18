@@ -3,8 +3,7 @@
  *
  * Triggers:
  *   - Product-loop card images (shop / category / tag)
- *   - Color-swatch hover tooltip on product pages (.wrap_attrs .tooltip_img)
- *   - Second click on an already-selected color swatch (label in .wrap_attrs)
+ *   - Second click on an already-selected color swatch (label in .wrap_attrs) — first click just selects
  *
  * Controls:
  *   - Horizontal zoom slider (100%–400%), ± buttons
@@ -199,24 +198,13 @@
 		open(bestSrc($t), $t.attr('alt'));
 	});
 
-	// --- Trigger: color-swatch hover tooltip on product pages ---
-	// preventDefault blocks the wrapping <label>'s "select radio" default action.
-	$(document).on('click', '.wrap_attrs .tooltip_img, .wrap_attrs .tooltip_img img', function (e) {
-		var $t = $(this);
-		var $picked = $t.is('img') ? $t : $t.find('img').first();
-		if (!$picked.length) return;
-		e.preventDefault();
-		e.stopPropagation();
-		open(bestSrc($picked), $picked.attr('alt'));
-	});
-
-	// --- Trigger: second click on an already-selected color swatch ---
+	// --- Trigger: click on an already-selected color swatch ---
 	// First click selects the variation (default WC behavior). Second click opens lightbox.
+	// Covers both the swatch body and its hover tooltip image — only the currently-checked swatch zooms.
 	// Handler fires before the radio's default action, so :checked still reflects the pre-click state.
 	$(document).on('click', '.wrap_attrs .wrap_item', function (e) {
-		if ($(e.target).closest('.tooltip_img').length) return; // tooltip has its own handler
 		var $input = $(this).find('input[type="radio"]').first();
-		if (!$input.length || !$input.is(':checked')) return;
+		if (!$input.length || !$input.is(':checked')) return; // unselected: let the label select it
 		var $src = $(this).find('.tooltip_img img').first();
 		if (!$src.length) $src = $(this).find('.wrap_img img').first();
 		if (!$src.length) return;
