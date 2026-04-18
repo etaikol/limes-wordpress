@@ -1,165 +1,102 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository. Describes what's **non-obvious** from reading the code — architecture seams, deploy workflow, gotchas. Project *state* (what's shipped / what's next) lives in [`PROGRESS.md`](PROGRESS.md) — read that when resuming work.
 
 ## What this is
 
-A custom WordPress theme named **Limes** for a Hebrew/RTL WooCommerce store (design business — curtains, seating, home textiles). Built on the Automattic Underscores (_s) starter theme and heavily customized for a single-store use case. Not meant to be reused as a parent theme.
-
-Active upgrade project is scoped in `../שדרוג אתר לימס.pdf` (cart UX, category page, product page). Work happens on the `dev` branch.
-
-## Session state (last updated 2026-04-18)
-
-- **Branch:** `dev`. In sync with `origin/dev` — everything through `f7ba933` is pushed.
-- **Last commit:** `f7ba933` — category page: restored "בואו להתרשם" overline + term description above the product grid (the 2026-04-18 partial-restore that had been documented in Done but not committed).
-- **Prior pushed commits this arc:** `6b007d5` (lightbox hover overlay + expand icon, no zoom cursor), `fceb436` (lightbox selector fix + logo z-index), `594b9c1` (banner v7 symmetric 27px).
-- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`). Unrelated composer drift — ignore. Also `.claude/settings.local.json` + `claude/` are now gitignored (Etai dropped friend-shared CLAUDE.md templates in `claude/`).
-- **Not yet SFTP-uploaded in full:** The 4 touched files from the polish arc = `css/style.css`, `js/product-card-lightbox.js` (new), `inc/core/enqueue-scripts.php`, `template-parts/top-inner.php`. Banner changes + lightbox CSS + logo z-index are all in `css/style.css`.
-- **Pending mom decision:** Banner variant A / B / C (A is current default). Once picked, flip `$default_variant` in `template-parts/top-inner.php`, delete losing branches + their CSS blocks, and remove the `?banner=legacy` rollback.
-
-## Upgrade mission list
-
-This is the working backlog for the current upgrade project, ordered by ROI (impact / effort) rather than by PDF order. Check off items as they ship by changing `[ ]` → `[x]` and adding a brief note + commit SHA. When scope changes, edit this list directly — this is the single source of truth for "what's left".
-
-### Tier 1 — quick wins (hours each)
-- [ ] **Slide-in side-cart on "Add to cart"** — _Impact: Very high · Difficulty: Low–Med_
-  PDF spec 1.b. `woocommerce/cart/mini-cart.php` already exists; wire a fragments drawer triggered on the `added_to_cart` JS event. Biggest conversion lever in the whole backlog. **This is the next task to pick up.**
-
-### Tier 2 — medium effort (1–3 days each)
-
-- [ ] **Cart page visual redesign** — _Impact: Very high · Difficulty: Med_
-  PDF spec 1.a. `woocommerce/cart/cart.php` + `cart-totals.php`. Two-column: items left, sticky summary right.
-- [ ] **Color swatch → swap main product image** — _Impact: High · Difficulty: Med_
-  PDF spec 3.a. `woocommerce/single-product/product-image.php` + small JS.
-- [ ] **Below-products gallery on category pages** — _Impact: Med · Difficulty: Med_
-  PDF spec 2.a. ACF gallery on `product_cat` taxonomy + template loop in `taxonomy-product_cat.php`.
-- [ ] **Simplify shipping to delivery vs self-pickup** — _Impact: High · Difficulty: Med_
-  Partial of PDF spec 1.c. Replace the long radio list in `cart-shipping.php`; derive price from a WC shipping zone table keyed on postcode.
-
-### Tier 3 — larger projects (scope before starting)
-
-- [ ] **1-page checkout** — _Impact: Very high · Difficulty: High_
-  Do after the cart redesign and simplified shipping are stable. Risk: payment + shipping + validation flows.
-- [ ] **Fully dynamic shipping calculator** — _Impact: High · Difficulty: High_
-  PDF spec 1.c in full. Matrix of zones × weight/volume. Needs pricing rules from the business owner.
-- [ ] **Palette refresh** — _Impact: Med–High · Difficulty: Med_
-  Keep `#B29076` as accent, warm backgrounds to ivory, charcoal for body text, single CTA accent. Mock before committing.
-
-### Done
-
-- [x] **Click product card image → lightbox preview** — `53e06f8` + `fceb436` (selector fix) + cursor tweak 2026-04-18 — New `js/product-card-lightbox.js` (jQuery, delegated click handler). Enqueued in `inc/core/enqueue-scripts.php` only on `is_shop() || is_product_category() || is_product_tag()`. Selector: `.box-product a.image img, ul.products li.product a img` (Limes uses the custom `.box.box-product > .inner > a.image > img` template via `template_product_box()` in `inc/templates/product-templates.php` — **not** the standard WC loop). Picks largest srcset candidate. Overlay = fixed, 82% black, fade-in; close via × button (top-left), Escape, or click outside image. Cursor on the image is `pointer` (the finger-hand) for affordance. Title/price/"צפה במוצר" button still navigate to product. CSS block in `css/style.css` under `/* Product card image lightbox */`.
-- [x] **Banner A v6/v7 — fit to accessibility widget** — `53e06f8` + `594b9c1` + 27px tweak — `.page-head-wrap--modern { margin-top: 10px }` (was 24), `.page-head--modern .section-inner { padding: 27px 0 }` (iterated 13 → 40 → 30 → 26 → 27 with Etai). Brown band is now tall enough for the a11y icon to fit within its vertical range without overshoot. Breadcrumb strip below pushed to `padding: 22px 90px 18px 0` so breadcrumbs sit lower and are pulled inward from the right edge (still RTL-start, just not flush). Lesson saved: use **symmetric** padding on `.section-inner` to keep the title visually centered — asymmetric padding makes the text look off-center even when geometrically placed.
-- [x] **Logo above accessibility widget** — `fceb436` — `header .logo-wrapper` gained `position: relative; z-index: 100000;` so the round "ליימס" mark visually covers the square a11y icon where they overlap at top-right.
-
-All 4 items below shipped in commit `d5047c4` on branch `dev`. Not yet SFTP-uploaded to dev in full — see "Session state" above for the staged upload plan.
-
-- [x] **Banner shrink — A/B/C/legacy variant switcher** — `d5047c4` + reworked 2026-04-18 — `template-parts/top-inner.php` with `?banner=a|b|c|legacy`. Default `a` = refined brown banner (modernized legacy): `#B29076` with subtle light→dark gradient overlay + `rgba(255,255,255,0.14)` hairline bottom border, grid layout `1fr auto 1fr` (breadcrumb pinned RTL-start/right, title centered, empty column for balance), `padding: 30px 0`, 32px/700 title, 14px/500 breadcrumb (`.page-head--modern`). `b` = minimal white strip with same grid layout, 30px dark title `#2B2723`, muted beige breadcrumb (`.page-head--inline`). `c` = 110px compact strip, uses WC category `thumbnail_id` as bg image with dark gradient overlay when present, falls back to `#B29076` solid (`.page-head--compact`). `legacy` = original 150px banner intact for rollback. CSS blocks in `css/style.css` labeled "Page head — Variant A/B/C". **Pending:** mom picks A, B or C → flip `$default_variant`, delete losing variants + legacy + switcher code.
-- [x] **Product card / category layout cleanup** — `d5047c4` + partial restore 2026-04-18 — `woocommerce/taxonomy-product_cat.php`: removed only the oversized "מוצרים בקטגוריה" H2 (the actual fold-killer), kept the small "בואו להתרשם" script overline and the centered `term_description()` above the product grid. First pass over-deleted the whole block and moved the description below the products; reverted to the classic layout minus the big H2 after Etai's feedback on 2026-04-18. CSS: deleted the orphaned `.leading-products--category` + `.section-subtitle--below-products` rules from `css/style.css`. Satisfies PDF spec 2.b. Only affects the `!$tapet_cat_type` path (standard categories); filtered/tapet categories unchanged.
-- [x] **Conditional "צד מנגנון" (mechanism side) field — per-category** — `d5047c4` — New file `inc/features/category-mechanism-toggle.php` registers an ACF true/false checkbox (`field_limes_hide_mechanism_side` / name `hide_mechanism_side`, field group "הגדרות קטגוריה — לימס") on every `product_cat` edit screen, + exposes helper `limes_product_hides_mechanism_side($product_id)` returning true if ANY of the product's categories has the flag set. Wired into `functions.php` under "Load Feature Files". Render guard wraps `.wrap_mechanism` div (only, not `.wrap_installation`) in `inc/woo-product-page.php` ~line 299, adds `mech-hidden` class on parent wrapper. Validation guard in dimension-validation function (same file, ~line 877) skips requiring the radio when hidden — no "נא לבחור צד מנגנון" error fires. CSS: `.wrap_mechanism_installation.mech-hidden .wrap_installation { width: 100%; }` + `:only-child` fallback. Satisfies PDF spec 3.b. **Mom must enable the checkbox on the וילון בד category (and any other fabric-curtain-like category) in wp-admin for it to take effect.** No product-level edits needed. תוספות + בחר גוון remain untouched.
-- [x] **Body-zoom hack neutralized on small desktops** — `d5047c4` — `header.php:20` — `const minZoom = 0.1` → `const minZoom = 1`. Below-1920 viewports no longer shrink the whole body; >1920 monitors still scale up (original intent preserved). Unlocks pixel-accurate CSS on 1366 / 1440 / 1536 laptops. Comment on the line explains why.
-
-## Deploy + dev loop
-
-There is no build step. PHP/CSS/JS edits upload directly to the dev WordPress via VSCode's SFTP extension.
-
-- **Dev site**: http://limmes-co-il-newdev.s201.upress.link/wp-admin
-- **SFTP config**: `.vscode/sftp.json` (this folder = theme root → maps to `/wp-content/themes/limes-wordpress-master/` on the server — note the `-master` suffix from an old GitHub zip extraction; don't rename unless you also update the server)
-- **Workflow**: edit locally → right-click file → `SFTP: Upload Active File` → hard-reload the dev URL (Ctrl+F5)
-- **`uploadOnSave` is intentionally false** — uploads are manual. Don't enable auto-upload while editing multiple files.
-
-### Cache gotcha
-
-**WP Rocket is active on dev** and will serve stale CSS/JS. After uploading theme assets either:
-- Deactivate WP Rocket on dev (Plugins → Deactivate), OR
-- WP admin toolbar → WP Rocket → Clear cache after every change
-
-If a CSS change doesn't show up, this is almost always why. Browser hard-reload alone is not enough.
-
-### Viewport zoom hack (read this before touching layout)
-
-`header.php` contains an inline script (lines ~16–167) that applies `document.body.style.zoom` based on viewport width vs. a 1920px base. Any pixel dimension in CSS is effectively multiplied by this zoom factor on desktops smaller than 1920px. Consequences:
-
-- "Shrink this to 50px" doesn't mean 50 real pixels on a 1440 screen — it means ~37px after zoom
-- Media queries still fire based on actual viewport, creating a layering confusion
-- Below 975px the zoom resets to 1
-
-When diagnosing "my CSS change looks wrong on my laptop but right in the mock", suspect this first.
+Custom WordPress theme **Limes** for a Hebrew/RTL WooCommerce store (design business — curtains, seating, home textiles). Built on Automattic Underscores (`_s`), heavily customized for a single-store use case. Not a parent theme. Active upgrade scoped in `../שדרוג אתר לימס.pdf`; work happens on the `dev` branch.
 
 ## Commands
 
 From the theme root (requires Composer):
 
 ```bash
-composer install              # first time setup
-composer run lint:php         # parallel PHP syntax check across the theme
+composer install              # first-time setup
+composer run lint:php         # parallel PHP syntax check
 composer run lint:wpcs        # WordPress Coding Standards via PHPCS
-composer run make-pot         # regenerate languages/_s.pot for translations
+composer run make-pot         # regenerate languages/_s.pot
 ```
 
-There are no unit tests and no JS build pipeline — JS is plain jQuery files in `js/` loaded via `wp_enqueue_script`.
+No unit tests. No JS build pipeline — plain jQuery files in `js/` loaded via `wp_enqueue_script`.
+
+## Deploy + dev loop
+
+No build step. Edits upload directly via VSCode's SFTP extension.
+
+- **Dev site:** http://limmes-co-il-newdev.s201.upress.link/wp-admin
+- **SFTP config:** `.vscode/sftp.json` (maps theme root → `/wp-content/themes/limes-wordpress-master/` on server — the `-master` suffix is from an old GitHub zip extraction; don't rename without updating the server).
+- **Workflow:** edit locally → right-click file → `SFTP: Upload Active File` → hard-reload dev (Ctrl+F5).
+- **`uploadOnSave` is intentionally off** — uploads are manual.
+
+**WP Rocket cache gotcha:** WP Rocket is active on dev and serves stale CSS/JS. After uploading theme assets, **clear WP Rocket cache** (admin toolbar → WP Rocket → Clear cache) or deactivate the plugin. Hard-reload alone is not enough. This is the #1 cause of "my CSS change isn't showing up".
+
+## Viewport zoom hack — read before touching layout
+
+`header.php` contains an inline script (lines ~16–167) that applies `document.body.style.zoom` based on viewport width vs. a 1920px base. **Every pixel dimension in CSS is effectively multiplied by this zoom factor** on desktops smaller than 1920px.
+
+- "Shrink to 50px" ≠ 50 real pixels on a 1440 screen — it's ~37px after zoom.
+- Media queries still fire on actual viewport, creating layering confusion.
+- Below 975px the zoom resets to 1.
+
+When "my CSS looks wrong on laptop but right in the mock" — suspect this first.
 
 ## Architecture
 
-### File loading order (functions.php)
+### File loading order (`functions.php`)
 
-`functions.php` orchestrates everything. The order matters:
+Orchestrates everything; order matters:
 
-1. **Core** (`inc/core/*`) — theme support, enqueues, image sizes, menus, CPTs, taxonomies, utilities, admin
-2. **Templates** (`inc/templates/*`) — product/post/blog template helpers
-3. **Features** (`inc/features/*`) — e.g. Yoast breadcrumb customizations
-4. **WooCommerce** (only if `class_exists('WooCommerce')`) — loaded as:
-   - `inc/woo-product-control.php` first (gates downstream behavior)
-   - Then the "new modular" `inc/woocommerce/woocommerce-integration.php`
-   - Then "legacy" files (`inc/woocommerce.php`, `inc/woo-product-page.php`, `inc/woo-cart-calculations.php`, `inc/woo-simple-product-customization.php`, `inc/woo-final-price-display.php`, `inc/woo-ensure-form-handler.php`) — still active, pending phase-out
-5. `functions-loaders.php` / `functions-templates.php` / `functions-woocommerce.php` at the theme root are **empty stubs** kept only so old `require_once` calls don't fatal. Don't add code to them.
+1. **Core** (`inc/core/*`) — theme support, enqueues, image sizes, menus, CPTs, taxonomies, utilities, admin.
+2. **Templates** (`inc/templates/*`) — product/post/blog template helpers.
+3. **Features** (`inc/features/*`) — e.g. Yoast breadcrumb customizations.
+4. **WooCommerce** (only if `class_exists('WooCommerce')`):
+   - `inc/woo-product-control.php` first (gates downstream behavior).
+   - Modern modular: `inc/woocommerce/woocommerce-integration.php`.
+   - Legacy: `inc/woocommerce.php`, `inc/woo-product-page.php`, `inc/woo-cart-calculations.php`, `inc/woo-simple-product-*.php`, `inc/woo-final-price-display.php`, `inc/woo-ensure-form-handler.php` — still active, pending phase-out.
+5. `functions-loaders.php` / `functions-templates.php` / `functions-woocommerce.php` at theme root are **empty stubs** kept so old `require_once` calls don't fatal. Don't add code to them.
 
-### "Legacy vs modular" — the recurring tension
+### Legacy vs. modular tension
 
-The theme is mid-refactor. There are two overlapping systems for several concerns (especially product customization and cart display). When you touch product addons, cart totals, or price display:
+The theme is mid-refactor with two overlapping systems for product customization, cart totals, and price display. When touching any of those:
 
-- **Check both** the modular (`inc/woocommerce/*`) and legacy (`inc/woo-*.php`) files — behavior may be set by either
-- Files named `woo-simple-product-*` are scar tissue from past fights with WooCommerce Product Add-Ons. `debug`, `form-fix`, `fix-final` in the names = iterative patches. Read them top-to-bottom before changing, they often disable or override each other.
-- Safer to add new behavior via the modular system and remove the legacy counterpart, than to edit legacy files in place.
+- **Check both** `inc/woocommerce/*` (modular) and `inc/woo-*.php` (legacy) — behavior may be set by either.
+- Files named `woo-simple-product-*` are scar tissue from past fights with WC Product Add-Ons. `debug` / `form-fix` / `fix-final` in names = iterative patches that sometimes disable each other. Read top-to-bottom before changing.
+- Safer to add new behavior via the modular system and remove the legacy counterpart than to edit legacy files in place.
 
-### WooCommerce template overrides
+### WooCommerce template overrides (`woocommerce/`)
 
-`woocommerce/` at the theme root is the standard WC template override folder — files here replace WooCommerce plugin defaults. Deepest customizations:
+Standard WC override folder — files here replace plugin defaults. Deepest customizations:
 
-- `woocommerce/cart/*` — the cart page (cart.php, cart-totals.php, mini-cart.php, shipping-calculator.php)
-- `woocommerce/checkout/*` — form-checkout, form-billing, form-shipping, review-order
-- `woocommerce/single-product/*` — product page layout including a custom `product-form/` subfolder
-- `woocommerce/content-product.php` — the product card used in shop/category grids
+- `woocommerce/cart/*` — cart page (cart.php, cart-totals.php, mini-cart.php, shipping-calculator.php).
+- `woocommerce/checkout/*` — form-checkout, form-billing, form-shipping, review-order.
+- `woocommerce/single-product/*` — product page including a custom `product-form/` subfolder.
+- `woocommerce/content-product.php` — product card in shop/category grids.
 
-When changing product or cart behavior, the template override in `woocommerce/` is usually the right layer; logic/hook customizations go in `inc/woocommerce/` or the legacy `inc/woo-*.php` files.
-
-### Page chrome
-
-- `header.php` — logo, top nav, mobile menu, cart icon, plus the body-zoom script and GTM/Meta Pixel tags. Header markup is inside `<header class="header-inner">`.
-- `template-parts/top-inner.php` — the brown banner with page title + Yoast breadcrumbs on every inner page. Styled in `css/style.css:1461` (section.top-inner, `#B29076`).
-- `footer.php` — footer.
-- `sidebar.php` — widget area (rarely used on this site).
+Template overrides go here; hook/filter logic goes in `inc/woocommerce/` or legacy `inc/woo-*.php`.
 
 ### Styles
 
-- `style.css` — theme header only (required by WP); actual CSS is in `css/style.css`
-- `css/style.css` — the real stylesheet, a long single file organized by section comments (`/* ---- Section X ---- */`). Use Grep for section names rather than scrolling.
-- `style-rtl.css` — RTL overrides (the site is Hebrew, `<html dir="rtl">` hard-coded in header.php)
-- `woocommerce.css` — WC-specific styles, enqueued separately
+- `style.css` — theme header only (required by WP); actual CSS is in `css/style.css`.
+- `css/style.css` — long single file organized by section comments (`/* ---- Section X ---- */`). Grep section names rather than scrolling.
+- `style-rtl.css` — RTL overrides (site is Hebrew, `<html dir="rtl">` hard-coded in `header.php`).
+- `woocommerce.css` — WC-specific, enqueued separately.
 
-### JS
+### Page chrome
 
-`js/` is a flat folder of jQuery-era scripts enqueued from `inc/core/enqueue-scripts.php`. Most are feature-specific patches (e.g. `addon-checkbox-to-dropdown.js`, `progressive-field-control.js`, `woocommerce-validation-fix.js`). `js/main.js` is the catch-all site behavior. There is no bundler — each file is a separate `<script>` tag.
+- `header.php` — logo, top nav, mobile menu, cart icon + the body-zoom script + GTM/Meta Pixel tags.
+- `template-parts/top-inner.php` — brown banner with page title + Yoast breadcrumbs on every inner page. Styled in [css/style.css:1461](css/style.css:1461).
+- `footer.php`, `sidebar.php` — self-explanatory.
 
-## Conventions specific to this codebase
+## Conventions
 
-- **RTL first.** The site is Hebrew. When adding layout CSS, verify in RTL context — don't assume left/right.
-- **Theme slug is `Limes` / `_s` / `limes-wordpress-master`** in various places. The server folder is `limes-wordpress-master`; the text domain is `extra` (set in `style.css` header, left over from the template); the theme name is `Limes`. Don't "fix" these inconsistencies without a coordinated deploy — references exist across the codebase and WP's options table.
-- **ACF options are heavily used.** Header contact info, social icons, and many content fields come from `get_field('header', 'options')` and similar. Template files assume these fields exist — check the "Limes Options" ACF group in `/wp-admin` when a field is missing at render time.
-- **`wp_is_mobile()` gates markup in header.php** — that's a server-side UA check, not a CSS breakpoint. Changes to mobile vs desktop header behavior often need edits in two places (PHP branch + the `desktop_only` / `mobile_only` class rules in CSS).
-- **Don't commit `.vscode/sftp.json`** — the file contains the FTP password. Already in `ignore` for the SFTP extension, but not in `.gitignore`. If you see it staged, unstage it.
+- **RTL first.** Site is Hebrew. Verify layout in RTL before declaring done — don't assume left/right.
+- **Theme-slug inconsistency is intentional.** `Limes` (theme name) / `_s` (starter leftovers) / `limes-wordpress-master` (server folder, from an old GitHub zip) / `extra` (text domain, template leftover). Don't "fix" without a coordinated deploy — references exist across code + WP options table.
+- **ACF options are heavy.** Header contact info, social icons, many content fields come from `get_field('header', 'options')` etc. Check the "Limes Options" ACF group in wp-admin when a field is missing at render.
+- **`wp_is_mobile()` gates markup in header.php** — server-side UA check, not a CSS breakpoint. Mobile vs. desktop changes usually need edits in two places (the PHP branch + `desktop_only` / `mobile_only` CSS classes).
+- **Never commit `.vscode/sftp.json`** — contains the FTP password. In the SFTP extension's ignore, but not in `.gitignore`. Unstage if you see it.
 
 ## Branches
 
-- `main`, `dev`, `upload-project` exist locally and on origin
-- **Active work is on `dev`** (last session pushed `d5047c4` there). `upload-project` is stale — ignore unless the user explicitly asks to use it.
-- Production deploy path is not yet established — treat all merges to `main` as "we're about to push to the live site" and ask the user before doing so.
+- `main`, `dev`, `upload-project` on origin.
+- **Active work is on `dev`.** `upload-project` is stale — ignore unless explicitly asked.
+- Production deploy path not yet established — treat merges to `main` as "about to push to live site" and confirm before doing so.
