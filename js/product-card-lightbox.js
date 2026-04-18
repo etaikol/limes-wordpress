@@ -200,11 +200,23 @@
 
 	// --- Trigger: click on an already-selected color swatch ---
 	// First click selects the variation (default WC behavior). Second click opens lightbox.
-	// Covers both the swatch body and its hover tooltip image — only the currently-checked swatch zooms.
-	// Handler fires before the radio's default action, so :checked still reflects the pre-click state.
+	// Timing note: by the time the delegated click handler runs on the label, the browser has
+	// already flipped the radio to :checked, so we can't trust :checked inside click. Instead we
+	// snapshot the group's previously-checked value on mousedown — before the activation fires —
+	// and compare in click. Same logic covers both the swatch body and its hover tooltip image.
+	var preSelected = {}; // radio-group name -> value that was checked before the current mousedown
+	$(document).on('mousedown', '.wrap_attrs .wrap_item', function () {
+		var $input = $(this).find('input[type="radio"]').first();
+		if (!$input.length) return;
+		var name = $input.attr('name');
+		var $checked = $('input[type="radio"][name="' + name + '"]:checked').first();
+		preSelected[name] = $checked.length ? $checked.val() : null;
+	});
 	$(document).on('click', '.wrap_attrs .wrap_item', function (e) {
 		var $input = $(this).find('input[type="radio"]').first();
-		if (!$input.length || !$input.is(':checked')) return; // unselected: let the label select it
+		if (!$input.length) return;
+		var name = $input.attr('name');
+		if (preSelected[name] !== $input.val()) return; // was not the pre-click selection — let WC select it
 		var $src = $(this).find('.tooltip_img img').first();
 		if (!$src.length) $src = $(this).find('.wrap_img img').first();
 		if (!$src.length) return;
