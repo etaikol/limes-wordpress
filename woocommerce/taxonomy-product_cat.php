@@ -292,8 +292,16 @@ $products = get_posts($args);
 ?>
 
 <?php if ( ! $tapet_cat_type  ) : ?>
-<section class="leading-products leading-products--category">
+<section class="leading-products">
 	<div class="section-inner wide">
+		<div class="section-title centered">
+			<p class="subtitle">בואו להתרשם</p>
+		</div>
+		<?php if( term_description( $cur_term->term_id ) && !$child_terms ) : ?>
+		<div class="section-subtitle">
+			<?=term_description( $cur_term->term_id );?>
+		</div>
+		<?php endif; ?>
 		<div class="boxes">
 			<?php
 			foreach( $products as $product ) {
@@ -301,11 +309,6 @@ $products = get_posts($args);
 			}
 			?>
 		</div>
-		<?php if( term_description( $cur_term->term_id ) && !$child_terms ) : ?>
-		<div class="section-subtitle section-subtitle--below-products">
-			<?=term_description( $cur_term->term_id );?>
-		</div>
-		<?php endif; ?>
 	</div>
 </section>
 <?php endif; ?>
