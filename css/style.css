@@ -1724,8 +1724,36 @@ section.page-head--modern,
 /* --------------------- /Page head variants ---------------------- */
 
 /* ---------------------- Product card image lightbox (category/shop loops) ---------------------- */
+.box-product a.image,
+ul.products li.product a { position: relative; }
 .box-product a.image img,
-ul.products li.product a img { cursor: zoom-in; }
+ul.products li.product a img {
+  cursor: pointer;
+  transition: transform 0.35s ease, filter 0.35s ease; }
+.box-product a.image:hover img,
+ul.products li.product a:hover img {
+  transform: scale(1.02);
+  filter: brightness(0.92); }
+.box-product a.image::after,
+ul.products li.product a.image::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%) scale(0.85);
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M15 3h6v6'/><path d='M9 21H3v-6'/><path d='M21 3l-7 7'/><path d='M3 21l7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s ease;
+  z-index: 3; }
+.box-product a.image:hover::after,
+ul.products li.product a.image:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1); }
 body.limes-lightbox-open { overflow: hidden; }
 .limes-lightbox {
   display: none;

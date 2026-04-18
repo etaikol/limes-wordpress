@@ -10,11 +10,11 @@ Active upgrade project is scoped in `../שדרוג אתר לימס.pdf` (cart UX
 
 ## Session state (last updated 2026-04-18)
 
-- **Branch:** `dev` (pushed to `origin/dev`). `upload-project` exists but is not being used. `main` is the eventual production target.
-- **Last commit:** `d5047c4` — "UX upgrades: banner variants, category cleanup, zoom fix, mechanism toggle". 4 Tier-1 items shipped in a single commit.
-- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`). Not Claude's changes — from a prior composer install. Leave alone unless re-running composer is desired.
-- **Not yet SFTP-uploaded to dev:** All 4 shipped files are committed but may not all be live on the dev site yet. Staged upload plan: (1) banner = `template-parts/top-inner.php` + `css/style.css`; (2) zoom = `header.php`; (3) category page = `woocommerce/taxonomy-product_cat.php` (CSS already covered in #1); (4) mechanism toggle = `inc/features/category-mechanism-toggle.php` + `functions.php` + `inc/woo-product-page.php` + CSS (covered in #1). After stage 4, mom must enable the ACF "הסתר שדה צד מנגנון" checkbox on the וילון בד category in wp-admin for the render guard to activate.
-- **Pending mom decision:** Banner variant A / B / C. Reworked 2026-04-18 after first-pass feedback — default is now A (refined brown, modernized legacy: smaller than old slab, grid layout with breadcrumb right + title centered). B = minimal white strip (was A). C = picture background (was B). Re-upload `template-parts/top-inner.php` + `css/style.css` to dev. Once picked, flip `$default_variant` in `template-parts/top-inner.php`, delete losing branches + their CSS blocks, and remove the `?banner=legacy` rollback.
+- **Branch:** `dev`. Ahead of `origin/dev` by 4 local commits (`53e06f8`, `594b9c1`, `fceb436`, and the cursor-polish commit from this session). Run `git push` when ready.
+- **Last commit:** cursor polish — product card image cursor switched from `zoom-in` to `pointer` (finger-hand). Banner v7 at symmetric `padding: 27px 0` after iterative sizing with Etai.
+- **Outstanding in working tree:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`) + `woocommerce/taxonomy-product_cat.php` (the 2026-04-18 partial restore that was documented in the Done section but never committed — left unstaged on purpose to keep this session's commits tight).
+- **Not yet SFTP-uploaded in full:** The 4 touched files this session = `css/style.css`, `js/product-card-lightbox.js` (new), `inc/core/enqueue-scripts.php`, `template-parts/top-inner.php`. Banner changes + lightbox CSS + logo z-index are all in `css/style.css`.
+- **Pending mom decision:** Banner variant A / B / C (A is current default). Once picked, flip `$default_variant` in `template-parts/top-inner.php`, delete losing branches + their CSS blocks, and remove the `?banner=legacy` rollback.
 
 ## Upgrade mission list
 
@@ -45,6 +45,10 @@ This is the working backlog for the current upgrade project, ordered by ROI (imp
   Keep `#B29076` as accent, warm backgrounds to ivory, charcoal for body text, single CTA accent. Mock before committing.
 
 ### Done
+
+- [x] **Click product card image → lightbox preview** — `53e06f8` + `fceb436` (selector fix) + cursor tweak 2026-04-18 — New `js/product-card-lightbox.js` (jQuery, delegated click handler). Enqueued in `inc/core/enqueue-scripts.php` only on `is_shop() || is_product_category() || is_product_tag()`. Selector: `.box-product a.image img, ul.products li.product a img` (Limes uses the custom `.box.box-product > .inner > a.image > img` template via `template_product_box()` in `inc/templates/product-templates.php` — **not** the standard WC loop). Picks largest srcset candidate. Overlay = fixed, 82% black, fade-in; close via × button (top-left), Escape, or click outside image. Cursor on the image is `pointer` (the finger-hand) for affordance. Title/price/"צפה במוצר" button still navigate to product. CSS block in `css/style.css` under `/* Product card image lightbox */`.
+- [x] **Banner A v6/v7 — fit to accessibility widget** — `53e06f8` + `594b9c1` + 27px tweak — `.page-head-wrap--modern { margin-top: 10px }` (was 24), `.page-head--modern .section-inner { padding: 27px 0 }` (iterated 13 → 40 → 30 → 26 → 27 with Etai). Brown band is now tall enough for the a11y icon to fit within its vertical range without overshoot. Breadcrumb strip below pushed to `padding: 22px 90px 18px 0` so breadcrumbs sit lower and are pulled inward from the right edge (still RTL-start, just not flush). Lesson saved: use **symmetric** padding on `.section-inner` to keep the title visually centered — asymmetric padding makes the text look off-center even when geometrically placed.
+- [x] **Logo above accessibility widget** — `fceb436` — `header .logo-wrapper` gained `position: relative; z-index: 100000;` so the round "ליימס" mark visually covers the square a11y icon where they overlap at top-right.
 
 All 4 items below shipped in commit `d5047c4` on branch `dev`. Not yet SFTP-uploaded to dev in full — see "Session state" above for the staged upload plan.
 
