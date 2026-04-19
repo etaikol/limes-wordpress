@@ -201,6 +201,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
 
+<?php if ( class_exists( 'WooCommerce' ) ) : ?>
+<div id="limes-side-cart-overlay" class="side-cart-overlay" aria-hidden="true"></div>
+<div id="limes-side-cart" class="limes-side-cart" role="dialog" aria-modal="true" aria-label="עגלת הקניות" dir="rtl">
+	<div class="side-cart__header">
+		<span class="side-cart__title">עגלת הקניות</span>
+		<button class="side-cart__close" aria-label="סגור">&#x2715;</button>
+	</div>
+	<div class="side-cart__body">
+		<div class="widget_shopping_cart_content">
+			<?php woocommerce_mini_cart(); ?>
+		</div>
+	</div>
+</div>
+<div id="limes-toast" class="limes-toast" role="status" aria-live="polite" dir="rtl">
+	<span class="limes-toast__check">&#x2713;</span><span class="limes-toast__text">נוסף לסל הקניות</span>
+</div>
+<?php endif; ?>
+
 <?php  
 	$cart_url = wc_get_cart_url();
 	$logo_mob = get_field('header', 'options')['logo']['mobile']; 

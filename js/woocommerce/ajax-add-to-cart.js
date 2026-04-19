@@ -174,33 +174,11 @@
 	}
 
 	/**
-     * Show success message
+     * Show success message — handled by side-cart.js toast + drawer; nothing to do here.
      */
 	function showSuccessMessage() {
-		// Find or create notices wrapper
-		var $noticesWrapper = $('.woocommerce-notices-wrapper');
-		
-		if ($noticesWrapper.length === 0) {
-			// Create notices wrapper if it doesn't exist
-			$noticesWrapper = $('<div class="woocommerce-notices-wrapper"></div>');
-			$('form.cart').before($noticesWrapper);
-		}
-		
-		// Remove any existing notices
-		$noticesWrapper.empty();
-
-		var message = '<div class="woocommerce-message" role="alert">המוצר נוסף לסל הקניות בהצלחה!</div>';
-		$noticesWrapper.html(message);
-
-		// Scroll to top to show message if wrapper has offset
-		if ($noticesWrapper.offset()) {
-			$('html, body').animate({
-				scrollTop: $noticesWrapper.offset().top - 100
-			}, 300);
-		}
-
-		// Cart count is already updated by WooCommerce fragments
-		// No need to manually update it
+		// Feedback is handled by the side-cart toast (#limes-toast) and the
+		// drawer opening, both triggered via the added_to_cart event in side-cart.js.
 	}
 
 	// Initialize when DOM is ready

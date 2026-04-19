@@ -38,6 +38,9 @@ function limes_enqueue_scripts() {
         // Load our cart count sync script
         wp_enqueue_script('limes-cart-count-sync', get_template_directory_uri() . '/js/woocommerce/cart-count-sync.js', array('jquery', 'wc-cart-fragments'), '1.0.0', true);
         
+        // Side-cart drawer — loaded on every page so it opens from product cards too
+        wp_enqueue_script('limes-side-cart', get_template_directory_uri() . '/js/woocommerce/side-cart.js', array('jquery', 'wc-cart-fragments'), '1.0.0', true);
+
         // Load cart scripts on cart and checkout pages
         if (function_exists('is_cart') && (is_cart() || is_checkout())) {
             wp_enqueue_script('wc-cart');
@@ -45,7 +48,7 @@ function limes_enqueue_scripts() {
 
         // Click-to-enlarge image lightbox (zoom + pan). Loops: product cards. Product page: color-swatch tooltip.
         if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag() || is_product())) {
-            wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '2.1.0', true);
+            wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '2.3.0', true);
         }
     }
     

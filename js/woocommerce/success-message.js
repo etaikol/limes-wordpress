@@ -40,33 +40,7 @@
             }
         }
         
-        // For AJAX add to cart on variable products
-        $(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
-            // Create success message if it doesn't exist
-            var $noticeWrapper = $('.woocommerce-notices-wrapper');
-            if ($noticeWrapper.length === 0) {
-                // Create the wrapper if it doesn't exist
-                $noticeWrapper = $('<div class="woocommerce-notices-wrapper"></div>');
-                $('.product .section-inner').prepend($noticeWrapper);
-            }
-            
-            // Clear any existing messages
-            $noticeWrapper.empty();
-            
-            // Add success message
-            var productTitle = $('.product-title').text() || 'המוצר';
-            var message = '<div class="woocommerce-message" role="alert">' +
-                         '"' + productTitle + '" נוסף לסל הקניות. ' +
-                         '<a href="' + wc_add_to_cart_params.cart_url + '" class="button wc-forward">מעבר לסל הקניות</a>' +
-                         '</div>';
-            
-            $noticeWrapper.html(message);
-            
-            // Scroll to the message
-            $('html, body').animate({
-                scrollTop: $noticeWrapper.offset().top - 100
-            }, 300);
-        });
+        // added_to_cart feedback is handled by the side-cart drawer + toast in side-cart.js
     });
 
 })(jQuery);

@@ -6,14 +6,24 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 
 ---
 
-## Session state (last updated 2026-04-19)
+## Session state (last updated 2026-04-20)
 
-- **Branch:** `dev`. In sync with `origin/dev` — everything through `cdaeff8` is pushed. This iteration's commit will land on top.
-- **Recent arc (2026-04-18/19 polish):** `df536bf` (gitignore + CLAUDE.md trim), `f7ba933` (category page description restore), `6b007d5` (lightbox hover overlay + expand icon, no zoom cursor), `fceb436` (lightbox selector fix + logo z-index), `594b9c1` (banner v7 symmetric 27px).
-- **Working-tree noise to ignore:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`) — unrelated composer drift. `.claude/settings.local.json` is tracked-but-gitignored — harmless.
-- **Not yet SFTP-uploaded in full:** 4 files — `css/style.css`, `js/product-card-lightbox.js` (now extended with zoom bar + swatch triggers + click-outside close), `inc/core/enqueue-scripts.php` (loads on product pages too, version bumped `2.0.0 → 2.1.0`), `template-parts/top-inner.php`. After upload: clear WP Rocket cache, hard-reload.
+- **Branch:** `dev`. Previous push through `5d57fee`. This session's commit is the side-cart + toast work.
+- **Recent arc (2026-04-20):** side-cart drawer + add-to-cart toast (see Done section).
+- **Working-tree noise to ignore:** 2 pre-existing vendor file drifts (`vendor/squizlabs/.../InlineHTMLUnitTest.3.inc`, `vendor/wp-coding-standards/.../CommaAfterArrayItemSniff.php`) — unrelated composer drift. `.claude/settings.local.json` tracked-but-gitignored — harmless.
+- **Still needs SFTP upload from 2026-04-18/19 arc:** `css/style.css`, `js/product-card-lightbox.js`, `template-parts/top-inner.php` (plus new files from today — see upload list below).
 - **Banner verdict:** **A is the winner** (current default). **B is dropped.** **C is parked** as a possible future option. Cleanup task below.
-- **Body-zoom hack:** ✅ verified on Etai's + brother's + mom's laptops — `minZoom: 1` works as intended. Stop treating this as "needs verification".
+- **Body-zoom hack:** ✅ verified — `minZoom: 1` works as intended. Stop treating this as "needs verification".
+
+### Upload list for this session (SFTP → clear WP Rocket)
+
+1. `header.php` — drawer + toast HTML added after body open
+2. `js/woocommerce/side-cart.js` — new: drawer open/close + toast show/hide
+3. `js/woocommerce/ajax-add-to-cart.js` — `showSuccessMessage()` gutted (toast handles it)
+4. `js/woocommerce/success-message.js` — removed scroll + notice from `added_to_cart` handler
+5. `inc/core/enqueue-scripts.php` — enqueues `side-cart.js` sitewide
+6. `inc/woocommerce/woocommerce-integration.php` — `side_cart_fragment` filter registered
+7. `css/edits.css` — toast + drawer styles appended
 
 ---
 
@@ -23,8 +33,7 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ### Tier 1 — quick wins (hours each)
 
-- [ ] **Slide-in side-cart on "Add to cart"** — _Impact: Very high · Difficulty: Low–Med_
-  PDF spec 1.b. `woocommerce/cart/mini-cart.php` already exists; wire a fragments drawer triggered on the `added_to_cart` JS event. Biggest conversion lever in the whole backlog. **This is the next task to pick up.**
+- [x] **Slide-in side-cart on "Add to cart"** — _committed 2026-04-20, see Done_
 - [ ] **Banner cleanup (A wins)** — _Impact: Low · Difficulty: Low_
   `template-parts/top-inner.php`: delete the variant-B branch + its `.page-head--inline` CSS block, hardcode A as default, remove the `?banner=…` query-string switcher. **Keep C's code + `.page-head--compact` CSS block** as a parked option for a future image-backed hero — just unwired from the switcher. Remove `?banner=legacy` rollback once confident.
 
@@ -51,6 +60,11 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 ---
 
 ## Done
+
+### 2026-04-20 — side-cart + toast
+
+- [x] **Slide-in side-cart drawer** — `js/woocommerce/side-cart.js` (new), `header.php` (overlay + `#limes-side-cart` + `#limes-toast` HTML), `inc/woocommerce/woocommerce-integration.php` (`side_cart_fragment` filter keeps content fresh via WC fragments), `inc/core/enqueue-scripts.php` (enqueued sitewide, depends on `wc-cart-fragments`). Slides in from the visual left (inline-end in RTL = where the cart icon lives). `#B29076` brown header bar, thumbnail + name + qty × price per item, subtotal row, filled checkout CTA + outline view-cart link. Opens on `added_to_cart` event and on cart icon click. Overlay click / × / Esc close.
+- [x] **3-second add-to-cart toast** — small white pill, `border-top: 3px solid #B29076`, brown ✓ checkmark + "נוסף לסל הקניות" text. Fixed `bottom: 34px; left: 50%` (bottom-center). Fades in on `added_to_cart` event, auto-hides after 3 s. Replaces the old ugly WC banner: `ajax-add-to-cart.js` `showSuccessMessage()` gutted; `success-message.js` scroll + notice handler removed.
 
 ### 2026-04-18/19 polish arc
 

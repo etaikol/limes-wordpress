@@ -63,6 +63,9 @@ class Limes_WooCommerce_Integration {
      * Load WooCommerce hooks
      */
     private static function load_hooks() {
+        // Side-cart fragment — keeps drawer content fresh after every cart change
+        add_filter('woocommerce_add_to_cart_fragments', array(__CLASS__, 'side_cart_fragment'));
+
         // Admin bar enhancements
         add_action('admin_bar_menu', array(__CLASS__, 'add_admin_bar_items'), 100);
         
@@ -200,6 +203,20 @@ class Limes_WooCommerce_Integration {
         }
 
         return $passed;
+    }
+
+    /**
+     * Register side-cart drawer as a WC fragment so it refreshes on every cart change
+     */
+    public static function side_cart_fragment( $fragments ) {
+        ob_start();
+        ?>
+        <div class="widget_shopping_cart_content">
+            <?php woocommerce_mini_cart(); ?>
+        </div>
+        <?php
+        $fragments['div.widget_shopping_cart_content'] = ob_get_clean();
+        return $fragments;
     }
 
     /**
