@@ -214,9 +214,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		</div>
 	</div>
 </div>
-<div id="limes-toast" class="limes-toast" role="status" aria-live="polite" dir="rtl">
-	<span class="limes-toast__check">&#x2713;</span><span class="limes-toast__text">נוסף לסל הקניות</span>
-</div>
 <?php endif; ?>
 
 <?php  

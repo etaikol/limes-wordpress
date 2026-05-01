@@ -133,6 +133,14 @@ function my_pao_hide_option_prices( $price_html, $option, $index, $type ) {
 // Commented out: This was preventing addon data from being saved to cart
 // add_filter( 'woocommerce_product_addons_update_totals', '__return_false' );
 
+/**
+ * Suppress WooCommerce's default "X added to cart" banner.
+ * The side-cart drawer (header.php + js/woocommerce/side-cart.js) is the
+ * confirmation surface — no need for the brown banner on top of the page.
+ * Returning empty stops wc_add_notice() from being called server-side.
+ */
+add_filter( 'woocommerce_add_to_cart_message_html', '__return_empty_string' );
+
 
 
 

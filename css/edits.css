@@ -802,40 +802,15 @@ section.product .sliders .gallery-top .swiper-slide img {
 }
 
 
-/* ---- Add-to-cart toast ---- */
-
-.limes-toast {
-  position: fixed;
-  bottom: 34px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  z-index: 10005;
-  background: #fff;
-  border-top: 3px solid #B29076;
-  border-radius: 3px;
-  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.13);
-  padding: 11px 24px 11px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #2b2723;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  direction: rtl;
-}
-.limes-toast.is-visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.limes-toast__check {
-  color: #B29076;
-  margin-left: 7px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
 /* ---- Side Cart Drawer ---- */
+
+/* Hide WC's default brown "added to cart" banner — drawer is the confirmation.
+   Server-side suppression in functions.php should already prevent it, but
+   this catches any edge case (cached pages, plugins re-adding it, etc.). */
+.woocommerce-message,
+.woocommerce-notices-wrapper:empty {
+  display: none !important;
+}
 
 .side-cart-overlay {
   position: fixed;

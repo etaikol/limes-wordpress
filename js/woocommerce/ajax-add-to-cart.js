@@ -42,18 +42,18 @@
 			return false;
 		}
 
-		// Check if AJAX should be used (only for variations, not simple products)
-		if ($form.hasClass('variations_form')) {
-			e.preventDefault();
+		// AJAX-ify both variable AND simple products so the side-cart drawer
+		// can pop without a full page reload (which would otherwise trigger
+		// WC's default brown banner via the URL `?added-to-cart=` param).
+		e.preventDefault();
 
-			// Quickly enable all addon fields
-			enableAddonFields($form);
+		// Quickly enable all addon fields
+		enableAddonFields($form);
 
-			// Perform AJAX submission
-			submitViaAjax($form, $button);
+		// Perform AJAX submission
+		submitViaAjax($form, $button);
 
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -174,11 +174,11 @@
 	}
 
 	/**
-     * Show success message — handled by side-cart.js toast + drawer; nothing to do here.
+     * Show success message — handled by the side-cart drawer in side-cart.js.
      */
 	function showSuccessMessage() {
-		// Feedback is handled by the side-cart toast (#limes-toast) and the
-		// drawer opening, both triggered via the added_to_cart event in side-cart.js.
+		// Feedback is the drawer opening, triggered via the
+		// `added_to_cart` event handler in side-cart.js.
 	}
 
 	// Initialize when DOM is ready

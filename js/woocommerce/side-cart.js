@@ -1,24 +1,15 @@
 /**
- * Limes Side Cart Drawer + Toast notification
+ * Limes Side Cart Drawer
+ *
+ * Auto-opens on `added_to_cart` (WooCommerce AJAX event).
+ * Also opens when the header cart icon is clicked.
+ * Closes on: ✕ button, overlay click, or ESC.
  */
 (function ($) {
   'use strict';
 
-  var $drawer, $overlay, $toast, $body;
-  var toastTimer;
+  var $drawer, $overlay, $body;
 
-  /* ---- Toast ---- */
-  function showToast(msg) {
-    if (!$toast.length) return;
-    $toast.find('.limes-toast__text').text(msg || 'נוסף לסל הקניות');
-    $toast.addClass('is-visible');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      $toast.removeClass('is-visible');
-    }, 3000);
-  }
-
-  /* ---- Drawer ---- */
   function openCart() {
     $drawer.addClass('is-open');
     $overlay.addClass('is-visible');
@@ -34,20 +25,19 @@
   $(function () {
     $drawer  = $('#limes-side-cart');
     $overlay = $('#limes-side-cart-overlay');
-    $toast   = $('#limes-toast');
     $body    = $('body');
 
     if (!$drawer.length) return;
 
-    // Cart icon click → open drawer instead of navigating
+    // Cart icon click → open drawer instead of navigating to /cart/
     $(document).on('click', 'a.cart-contents', function (e) {
       e.preventDefault();
       openCart();
     });
 
-    // Fired after every successful AJAX add-to-cart (WC + our custom handler)
+    // Fired after every successful AJAX add-to-cart (WC core + our handler).
+    // The drawer popping IS the success confirmation — no toast needed.
     $body.on('added_to_cart', function () {
-      showToast();
       openCart();
     });
 
@@ -58,7 +48,8 @@
       if (e.key === 'Escape') closeCart();
     });
 
-    // Button links inside drawer navigate normally, close drawer first
+    // CTAs inside drawer navigate normally — close the drawer first so
+    // the page transition feels clean.
     $drawer.on('click', '.woocommerce-mini-cart__buttons a', function () {
       closeCart();
     });

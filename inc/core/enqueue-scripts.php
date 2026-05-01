@@ -123,13 +123,15 @@ function limes_enqueue_scripts() {
         wp_enqueue_script('product-sticky-scroll', get_template_directory_uri() . '/js/product-sticky-scroll.js', array('jquery'), '1.0.0', true);
         wp_enqueue_style('product-sticky-scroll', get_template_directory_uri() . '/css/product-sticky-scroll.css', array(), '1.0.0', false);
         
-        // Success message handler - loads for all products
-        wp_enqueue_script('limes-success-message', get_template_directory_uri() . '/js/woocommerce/success-message.js', array('jquery'), '1.0.0', true);
-        
-        // AJAX add to cart for variable products
-        if ($product && !$product->is_type('simple')) {
-            wp_enqueue_script('limes-ajax-add-to-cart', get_template_directory_uri() . '/js/woocommerce/ajax-add-to-cart.js', array('jquery', 'wc-add-to-cart'), '1.0.0', true);
-        }
+        // Success message handler — DISABLED. The side-cart drawer is the
+        // confirmation surface now; this script's reload-banner branch is dead
+        // (no more page reloads) and its added_to_cart branch was already gutted.
+        // wp_enqueue_script('limes-success-message', get_template_directory_uri() . '/js/woocommerce/success-message.js', array('jquery'), '1.0.0', true);
+
+        // AJAX add to cart — both variable AND simple products. Without this,
+        // simple products fall back to a full page reload which shows WC's
+        // default brown success banner and never fires `added_to_cart` for the drawer.
+        wp_enqueue_script('limes-ajax-add-to-cart', get_template_directory_uri() . '/js/woocommerce/ajax-add-to-cart.js', array('jquery', 'wc-add-to-cart'), '1.0.0', true);
         
         // REMOVED: Simple product fixes - no longer needed as simple products use default WooCommerce
         
