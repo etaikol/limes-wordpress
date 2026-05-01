@@ -43,6 +43,9 @@ wp-config.php
 /claude/
 .claude/settings.local.json
 
+# Local documentation (Word files, session notes — not for the repo)
+/docs/
+
 # All plugins
 #
 # Note: If you wish to whitelist plugins,
@@ -53,4 +56,6 @@ wp-config.php
 #
 # Note: If you wish to whitelist themes,
 # uncomment the next line
-#/wp-content/themes
+#/wp-content/themesvendor/
+images/General/
+images/phone-*.jpg
