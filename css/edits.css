@@ -933,17 +933,21 @@ section.product .sliders .gallery-top .swiper-slide img {
   flex-shrink: 0;
 }
 
-/* Remove × — pinned to inline-end (visual left in RTL) */
+/* Remove "הסרה" — text link pinned to visual left (line-end in RTL) */
 .limes-side-cart .woocommerce-mini-cart-item .remove {
   position: absolute;
   top: 50%;
   left: 14px;
   transform: translateY(-50%);
-  color: #c5b9b0;
-  font-size: 17px;
-  text-decoration: none;
+  color: #8a7a6a;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
   line-height: 1;
   transition: color 0.15s;
+  background: transparent;
+  border: 0;
+  padding: 4px 2px;
 }
 .limes-side-cart .woocommerce-mini-cart-item .remove:hover {
   color: #c0392b;

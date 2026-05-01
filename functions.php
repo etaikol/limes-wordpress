@@ -141,6 +141,23 @@ function my_pao_hide_option_prices( $price_html, $option, $index, $type ) {
  */
 add_filter( 'woocommerce_add_to_cart_message_html', '__return_empty_string' );
 
+/**
+ * Replace the tiny "×" in the side-cart with a Hebrew "הסרה" text button.
+ * Filters the link WooCommerce builds in mini-cart.php so it works wherever
+ * the mini-cart renders.
+ */
+add_filter( 'woocommerce_cart_item_remove_link', 'limes_hebrew_mini_cart_remove_link', 10, 2 );
+function limes_hebrew_mini_cart_remove_link( $link_html, $cart_item_key ) {
+	// Only rewrite mini-cart links (not the main cart page) — WC reuses the
+	// same filter for both, so detect by the class WC adds in mini-cart.php.
+	if ( false === strpos( $link_html, 'remove_from_cart_button' ) ) {
+		return $link_html;
+	}
+
+	// Swap the visible text "×" for "הסרה" while keeping all data-* attrs.
+	return preg_replace( '/>(?:&times;|×)<\/a>/u', '>הסרה</a>', $link_html );
+}
+
 
 
 
