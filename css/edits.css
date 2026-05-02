@@ -933,24 +933,29 @@ section.product .sliders .gallery-top .swiper-slide img {
   flex-shrink: 0;
 }
 
-/* Remove "הסרה" — text link pinned to visual left (line-end in RTL) */
+/* Remove "×" — small red round button, pinned to visual left in RTL */
 .limes-side-cart .woocommerce-mini-cart-item .remove {
   position: absolute;
   top: 50%;
-  left: 14px;
+  left: 12px;
   transform: translateY(-50%);
-  color: #8a7a6a;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: underline;
-  line-height: 1;
-  transition: color 0.15s;
-  background: transparent;
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  background: #f3eae3;
+  color: #c0392b;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
   border: 0;
-  padding: 4px 2px;
 }
 .limes-side-cart .woocommerce-mini-cart-item .remove:hover {
-  color: #c0392b;
+  background: #c0392b;
+  color: #fff;
 }
 
 /* Hide verbose variation data — name + qty is enough in the drawer */

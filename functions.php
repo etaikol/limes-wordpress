@@ -142,20 +142,30 @@ function my_pao_hide_option_prices( $price_html, $option, $index, $type ) {
 add_filter( 'woocommerce_add_to_cart_message_html', '__return_empty_string' );
 
 /**
- * Replace the tiny "×" in the side-cart with a Hebrew "הסרה" text button.
- * Filters the link WooCommerce builds in mini-cart.php so it works wherever
- * the mini-cart renders.
+ * Style the mini-cart "×" remove glyph as a small red X.
+ * The CSS in css/edits.css turns this into a red round button.
+ * (We previously tried "הסרה" text — too noisy in a small drawer cell.)
  */
-add_filter( 'woocommerce_cart_item_remove_link', 'limes_hebrew_mini_cart_remove_link', 10, 2 );
-function limes_hebrew_mini_cart_remove_link( $link_html, $cart_item_key ) {
-	// Only rewrite mini-cart links (not the main cart page) — WC reuses the
-	// same filter for both, so detect by the class WC adds in mini-cart.php.
-	if ( false === strpos( $link_html, 'remove_from_cart_button' ) ) {
-		return $link_html;
-	}
 
-	// Swap the visible text "×" for "הסרה" while keeping all data-* attrs.
-	return preg_replace( '/>(?:&times;|×)<\/a>/u', '>הסרה</a>', $link_html );
+/**
+ * Show the LINE TOTAL in the mini-cart row (e.g. "1 × ₪4400") instead of
+ * WooCommerce's default "qty × unit_price" which on this site shows the
+ * raw base price (₪400) and ignores dimensional/roll calculations.
+ *
+ * `line_subtotal` is what WC actually uses for the cart subtotal, so this
+ * matches what the user pays.
+ */
+add_filter( 'woocommerce_widget_cart_item_quantity', 'limes_mini_cart_line_total', 10, 3 );
+function limes_mini_cart_line_total( $html, $cart_item, $cart_item_key ) {
+	$qty           = $cart_item['quantity'];
+	$line_subtotal = isset( $cart_item['line_subtotal'] ) ? (float) $cart_item['line_subtotal'] : 0;
+
+	return '<span class="quantity">' . sprintf(
+		/* translators: 1: quantity, 2: line subtotal */
+		'%1$s &times; %2$s',
+		esc_html( $qty ),
+		wc_price( $line_subtotal )
+	) . '</span>';
 }
 
 
