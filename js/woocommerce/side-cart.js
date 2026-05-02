@@ -60,7 +60,16 @@
     $overlay = $('#limes-side-cart-overlay');
     $body    = $('body');
 
-    if (!$drawer.length) return;
+    if (!$drawer.length) {
+      // Drawer markup missing on this page (likely stale WP Rocket cache).
+      // Log a clear signal so we can verify the script ran but had no DOM.
+      // eslint-disable-next-line no-console
+      console.warn('[Limes side-cart] Drawer markup #limes-side-cart not found — cart icon will navigate to /cart/ as fallback. If this is unexpected, clear WP Rocket cache for the whole site.');
+      return;
+    }
+
+    // eslint-disable-next-line no-console
+    console.log('[Limes side-cart] Initialized.');
 
     // Cart icon click → open drawer instead of navigating to /cart/
     $(document).on('click', 'a.cart-contents', function (e) {
