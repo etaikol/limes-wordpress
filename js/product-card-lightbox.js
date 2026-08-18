@@ -2,10 +2,10 @@
  * Limes — click to preview images in a lightbox with zoom + pan.
  *
  * Triggers:
- *   - Small magnifier button injected over product-loop card images (shop / category / tag)
- *     (the card itself — image, white area, title — navigates to the product page)
  *   - Main product-page gallery image (single-product swiper)
  *   - Second click on an already-selected color swatch (label in .wrap_attrs) — first click just selects
+ *
+ * Catalog cards never open the lightbox: their image and card surface navigate to the product page.
  *
  * Controls:
  *   - Horizontal zoom slider (100%–400%), ± buttons
@@ -31,8 +31,7 @@
 		baseY: 0
 	};
 
-	var $overlay, $img, $inner, $range, $val, $viewBtn;
-	var currentProductUrl = '';
+	var $overlay, $img, $inner, $range, $val;
 
 	function build() {
 		if ($overlay && $overlay.length) return;
@@ -40,7 +39,6 @@
 		$overlay = $(
 			'<div id="limes-lightbox" class="limes-lightbox" aria-hidden="true" role="dialog">' +
 				'<button type="button" class="limes-lightbox__close" aria-label="סגור">×</button>' +
-				'<a class="limes-lightbox__view" href="#" hidden>צפה במוצר</a>' +
 				'<div class="limes-lightbox__inner">' +
 					'<img class="limes-lightbox__img" alt="" draggable="false">' +
 				'</div>' +
@@ -58,30 +56,14 @@
 		$inner = $overlay.find('.limes-lightbox__inner');
 		$range = $overlay.find('.limes-lightbox__range');
 		$val = $overlay.find('.limes-lightbox__val');
-		$viewBtn = $overlay.find('.limes-lightbox__view');
 
-		// Close: any click outside the image / zoombar / × / view-product button.
+		// Close on any click outside the image or zoom controls.
 		// Keeps drag-to-pan safe because dragging ends on mouseup, not click.
 		$overlay.on('click', function (e) {
 			var $t = $(e.target);
 			if ($t.closest('.limes-lightbox__img').length) return;
 			if ($t.closest('.limes-lightbox__zoombar').length) return;
-			if ($t.closest('.limes-lightbox__view').length) return;
 			close();
-		});
-
-		// Click on the enlarged image navigates to the product page when the lightbox was opened
-		// from a catalog card. Suppressed while the user is panning (dragging) so we don't hijack
-		// their pan gesture as a click. mousedown → track; mouseup → if barely moved, treat as click.
-		var downX = 0, downY = 0, downTime = 0;
-		$img.on('mousedown', function (e) {
-			downX = e.clientX; downY = e.clientY; downTime = Date.now();
-		});
-		$img.on('click', function (e) {
-			if (!currentProductUrl) return;
-			var moved = Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY);
-			if (moved > 6) return; // drag, not click
-			window.location.href = currentProductUrl;
 		});
 
 		$(document).on('keydown.limeslb', function (e) {
@@ -197,18 +179,10 @@
 		return chosen;
 	}
 
-	function open(src, alt, productUrl) {
+	function open(src, alt) {
 		build();
 		resetZoom();
 		$img.attr('src', src).attr('alt', alt || '');
-		currentProductUrl = productUrl || '';
-		if (currentProductUrl) {
-			$viewBtn.attr('href', currentProductUrl).removeAttr('hidden');
-			$img.addClass('is-navigable');
-		} else {
-			$viewBtn.attr('hidden', true);
-			$img.removeClass('is-navigable');
-		}
 		$overlay.addClass('is-open').attr('aria-hidden', 'false');
 		$('body').addClass('limes-lightbox-open');
 	}
@@ -219,56 +193,16 @@
 		$('body').removeClass('limes-lightbox-open');
 	}
 
-	// --- Catalog cards: whole-card navigation + small magnifier trigger ---
-	// Inject a small magnifying-glass button over each card image. The button opens the lightbox;
-	// every other click on the card (image, white area, title, price) routes to the product page.
-	function injectCardZoomButtons() {
-		$('.box-product .inner').each(function () {
-			var $inner = $(this);
-			if ($inner.find('.limes-card-zoom').length) return; // already injected
-			if (!$inner.find('a.image').length) return;
-			var $btn = $(
-				'<span class="limes-card-zoom" role="button" tabindex="0" aria-label="הגדל תמונה" title="הגדל תמונה">' +
-					'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
-						'<circle cx="11" cy="11" r="7"/>' +
-						'<line x1="21" y1="21" x2="16.65" y2="16.65"/>' +
-						'<line x1="11" y1="8" x2="11" y2="14"/>' +
-						'<line x1="8" y1="11" x2="14" y2="11"/>' +
-					'</svg>' +
-				'</span>'
-			);
-			$inner.append($btn);
-		});
-	}
 	$(function () {
-		injectCardZoomButtons();
 		// Product page: strip the legacy `data-fancybox` attribute so the old fancybox plugin
 		// doesn't hijack the click — we want our lightbox instead.
 		$('section.product .sliders .gallery-top a.swiper-slide').removeAttr('data-fancybox');
 	});
-	// Category pages sometimes re-render product lists via AJAX filters — re-inject after DOM changes.
-	$(document).on('updated_wc_div wc_fragments_refreshed', injectCardZoomButtons);
 
-	// Magnifier click → lightbox (carries the product URL so the lightbox can offer a "צפה במוצר" jump).
-	$(document).on('click', '.limes-card-zoom', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var $inner = $(this).closest('.inner');
-		var $img = $inner.find('a.image img').first();
-		if (!$img.length) return;
-		var productUrl = $inner.find('a.image').attr('href') || '';
-		open(bestSrc($img), $img.attr('alt'), productUrl);
-	});
-	$(document).on('keydown', '.limes-card-zoom', function (e) {
-		if (e.key !== 'Enter' && e.key !== ' ') return;
-		e.preventDefault();
-		$(this).trigger('click');
-	});
-
-	// Whole-card click → product page. Bail if the user clicked an existing link/button or the magnifier.
+	// Whole-card click → product page. Existing links and controls retain their native behavior.
 	$(document).on('click', '.box-product', function (e) {
 		var $t = $(e.target);
-		if ($t.closest('a, button, .like, .wpulike, .limes-card-zoom').length) return;
+		if ($t.closest('a, button, .like, .wpulike').length) return;
 		var href = $(this).find('a.image').attr('href');
 		if (href) window.location.href = href;
 	});

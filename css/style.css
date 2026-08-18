@@ -1735,8 +1735,8 @@ section.page-head--modern,
         font-size: 22px; } }
 /* --------------------- /Page head variants ---------------------- */
 
-/* ---------------------- Product card image lightbox (category/shop loops + color swatches) ---------------------- */
-/* Whole card routes to the product page (JS handler). A small corner magnifier opens the lightbox without navigating. */
+/* ---------------------- Product image lightbox (single product gallery + color swatches) ---------------------- */
+/* Catalog cards route directly to the product page; the lightbox is only available on product pages. */
 .box-product { cursor: pointer; }
 .box-product .inner { position: relative; }
 .box-product a.image,
@@ -1747,35 +1747,6 @@ ul.products li.product a img {
   transition: filter 0.3s ease; }
 .box-product:hover a.image img {
   filter: brightness(0.97); }
-
-/* Small magnifier button — JS-injected into .box-product .inner. Top-start corner, shows on card hover. */
-.box-product .limes-card-zoom {
-  position: absolute;
-  top: 10px;
-  inset-inline-start: 10px;
-  width: 34px;
-  height: 34px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  cursor: zoom-in;
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
-  z-index: 5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); }
-.box-product:hover .limes-card-zoom,
-.box-product .limes-card-zoom:focus-visible {
-  opacity: 1;
-  transform: translateY(0); }
-.box-product .limes-card-zoom:hover {
-  background: #fff;
-  transform: translateY(0) scale(1.08); }
-.box-product .limes-card-zoom svg { display: block; }
 
 /* Color-swatch hover tooltip: expand affordance (product page) */
 .wrap_attrs .tooltip_img {
@@ -1859,29 +1830,6 @@ body.limes-lightbox-open { overflow: hidden; }
       background: rgba(255, 255, 255, 0.25);
       transform: scale(1.05); }
 
-  /* View-product button — only shown when lightbox is opened from a catalog card */
-  .limes-lightbox__view {
-    position: absolute;
-    top: 22px;
-    right: 24px;
-    padding: 10px 22px;
-    background: #B29076;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 2;
-    transition: background 0.18s ease, transform 0.18s ease;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); }
-    .limes-lightbox__view:hover {
-      background: #9a7a63;
-      color: #fff;
-      transform: translateY(-1px); }
-  .limes-lightbox__img.is-navigable { cursor: pointer; }
-  .limes-lightbox__img.is-navigable.is-zoomed { cursor: grab; }
-
   /* Zoom bar: bottom-center, pill-shaped, glassy */
   .limes-lightbox__zoombar {
     position: absolute;
@@ -1955,7 +1903,7 @@ body.limes-lightbox-open { overflow: hidden; }
 @keyframes limes-lb-fade {
   from { opacity: 0; }
   to   { opacity: 1; } }
-/* --------------------- /Product card image lightbox ---------------------- */
+/* --------------------- /Product image lightbox ---------------------- */
 
 /* Product form: when a category hides "צד מנגנון", let "בחר סוג התקנה" fill the row */
 .wrap_mechanism_installation.mech-hidden .wrap_installation {

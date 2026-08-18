@@ -778,27 +778,22 @@ section.product .parts .part.gallery_col {
 
 }
 
-/* ---- Product page main gallery: shrink main image + show zoom cursor ---- */
-/* Before: image was 800px tall and column was 71.5% — visually dominated the screen on desktop. */
-/* Constrain the SWIPER CONTAINER (not just the image wrapper) so adjacent slides don't peek on the sides. */
+/* ---- Product page main gallery: full-width, uncropped responsive images ---- */
 section.product .sliders .gallery-top {
-	max-width: 720px;
-	margin: 0 auto;
+	width: 100%;
+	max-width: none;
+	margin: 0;
 }
 section.product .sliders .gallery-top .image-wrapper {
-	max-width: 100%;
-	margin: 0 auto;
+	width: 100%;
 }
 section.product .sliders .gallery-top .swiper-slide img {
-	height: 560px;
+	display: block;
+	width: 100%;
+	height: auto;
+	object-fit: contain;
+	object-position: center;
 	cursor: zoom-in;
-}
-@media (max-width: 1100px) and (min-width: 975px) {
-	section.product .sliders .gallery-top { max-width: 620px; }
-	section.product .sliders .gallery-top .swiper-slide img { height: 480px; }
-}
-@media (max-width: 975px) {
-	section.product .sliders .gallery-top { max-width: 100%; }
 }
 
 
