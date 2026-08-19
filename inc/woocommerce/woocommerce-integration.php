@@ -74,6 +74,9 @@ class Limes_WooCommerce_Integration {
         
         // Checkout field customization
         add_filter('woocommerce_checkout_fields', array(__CLASS__, 'custom_override_checkout_fields'), 20);
+
+        // Keep the optional alternate shipping address collapsed by default.
+        add_filter('woocommerce_ship_to_different_address_checked', '__return_false', 20);
         
         // Universal addon section
         add_action('woocommerce_single_product_summary', array(__CLASS__, 'add_universal_addon_section'), 25);

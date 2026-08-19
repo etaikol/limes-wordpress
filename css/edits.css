@@ -169,54 +169,9 @@ form.cart.dimensions-required.price-invalid .wc-pao-subtotal-line p.price::after
 	margin: 0px 0 20px 0;
 }
 
-/* Checkout validation: field errors stay inline; non-field errors remain as a compact summary. */
+/* Checkout validation: remove the duplicated top list; errors stay beside existing fields. */
 body.woocommerce-checkout .woocommerce-NoticeGroup-checkout {
-	width: 100%;
-	margin: 0 0 24px;
-}
-
-body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error {
-	position: relative;
-	width: 100%;
-	margin: 0;
-	padding: 14px 44px 14px 18px;
-	border: 1px solid #efcfcc;
-	border-right: 4px solid #b9473f;
-	border-radius: 4px;
-	background: #fff9f8;
-	color: #7f2c27;
-	font-size: 15px;
-	font-weight: 600;
-	line-height: 1.5;
-	list-style: none;
-	box-sizing: border-box;
-}
-
-body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error::before {
-	content: "!";
-	position: absolute;
-	top: 15px;
-	right: 16px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 17px;
-	height: 17px;
-	border-radius: 50%;
-	background: #b9473f;
-	color: #fff;
-	font-size: 11px;
-	font-weight: 700;
-	line-height: 1;
-}
-
-body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error li {
-	margin: 0;
-	list-style: none;
-}
-
-body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error li + li {
-	margin-top: 5px;
+	display: none !important;
 }
 
 body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid {

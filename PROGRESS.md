@@ -8,11 +8,11 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 
 ## Session state (last updated 2026-08-19)
 
-- **Branch:** `dev`. Current HEAD: `8f4f02a` (side-cart View cart CTA removed), synced with `origin/dev` before the checkout-validation work below.
-- **Current work (2026-08-19):** redesigned classic-checkout validation: duplicate field errors are removed from the page-level summary, invalid fields receive restrained inline red treatment, and focus moves to the first invalid control. General/payment errors remain visible in a compact summary.
-- **Validation completed locally:** `git diff --check` passes; the checkout script is scoped to classic checkout, removes only summary entries duplicated inline, and preserves unmatched general/payment errors.
+- **Branch:** `dev`. Current HEAD: `423e765` (checkout validation UX), synced with `origin/dev` before the alternate-shipping default fix below.
+- **Current work (2026-08-19):** corrected checkout validation to remove the entire duplicated top error block and emphasize only the existing form controls/messages below; also forced "Ship to a different address?" to start unchecked/collapsed.
+- **Validation completed locally:** `git diff --check` passes; no new checkout controls are created, the top notice group is removed, and validation styling is scoped to existing `.form-row.woocommerce-invalid` controls.
 - **Validation limitation:** this machine has no `node` or `php` executable, so JS/PHP parser checks could not run. Browser QA on dev is still required after upload and cache clear.
-- **Working tree before this fix:** clean. The three code files plus `PROGRESS.md` listed by `git status` belong to this task.
+- **Working tree before this correction:** contained only the alternate-shipping filter and its documentation. The validation JS/CSS and cache-version changes are the requested correction to `423e765`.
 - **Older deployment note to verify:** the 2026-04-18/19 session recorded `css/style.css`, `js/product-card-lightbox.js`, and `template-parts/top-inner.php` as still needing SFTP upload; confirm current server state before replaying old uploads.
 - **Banner verdict:** **A is the winner** (current default). **B is dropped.** **C is parked** as a possible future option. Cleanup task below.
 - **Body-zoom hack:** ✅ verified — `minZoom: 1` works as intended. Stop treating this as "needs verification".
@@ -31,18 +31,26 @@ This is the chronological record of the QA/UX work completed throughout the curr
    - Removed only the drawer's redundant View cart button at render time, including AJAX fragments.
    - Kept Checkout as the single full-width brown CTA at its original height; it naturally moves into the first button position.
    - Preserved WooCommerce's default buttons in any mini-cart outside the custom drawer.
-3. **Checkout validation UX** — implemented locally; not yet committed or uploaded.
-   - Replaced the duplicated solid-red field-error wall with inline invalid-field treatment.
+3. **Checkout validation UX** — committed as `423e765`; corrected locally after clarification.
+   - Removes the entire duplicated solid-red field-error wall; no replacement content is added above the form.
    - Added restrained burgundy borders/text, pale error backgrounds, a small `!` marker, focus ring, first-error scroll/focus, and ARIA linkage.
-   - Deduplicates only field messages; unmatched payment/general errors remain visible as a compact top alert.
-   - Added checkout-only JS, CSS cache-busting, and a dedicated staging QA gate.
-4. **Deployment state** — the checkout-validation files listed immediately below still require SFTP upload, WP Rocket cache clear, and browser QA before live deployment.
+   - Uses only the textboxes and inline messages WooCommerce already renders below; it creates no new form controls.
+   - Added checkout-only JS, corrected cache-busting, and a dedicated staging QA gate.
+4. **Alternate shipping-address default** — implemented locally; not yet committed or uploaded.
+   - WooCommerce previously derived the checkbox default from `woocommerce_ship_to_destination`; when set to `shipping`, the full alternate-address form opened automatically.
+   - Added a scoped WooCommerce filter so the checkbox starts unchecked and the fields stay collapsed until the customer explicitly opts in.
+5. **Deployment state** — the correction and alternate-shipping files listed immediately below still require SFTP upload, WP Rocket cache clear, and browser QA before live deployment.
 
-### Upload list for the 2026-08-19 checkout-validation UX fix (SFTP → clear WP Rocket)
+### Upload list for the current 2026-08-19 corrections (SFTP → clear WP Rocket)
 
-1. `js/woocommerce/checkout-validation-ui.js` — new: deduplicates field errors, preserves general errors, manages focus and ARIA state
-2. `css/edits.css` — refined invalid-field, inline-message, focus-ring, and compact general-error styles
-3. `inc/core/enqueue-scripts.php` — checkout-only script enqueue; `css/edits.css` cache-bust bumped to `1.0.4`
+1. `js/woocommerce/checkout-validation-ui.js` — removes the complete top notice group; keeps focus/ARIA behavior on existing fields
+2. `css/edits.css` — hides the top notice group and styles only existing invalid fields/messages
+3. `inc/core/enqueue-scripts.php` — cache-busts validation JS to `1.0.1` and edits CSS to `1.0.5`
+4. `inc/woocommerce/woocommerce-integration.php` — forces the optional alternate-shipping checkbox to start unchecked
+
+### Superseded upload list: original 2026-08-19 checkout-validation UX (`423e765`)
+
+The initial compact-summary behavior in this commit is superseded by the current correction above; do not deploy its three files without the current changes.
 
 ### Previous upload list: 2026-08-19 side-cart CTA fix (`8f4f02a`)
 
@@ -78,8 +86,10 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ### Tier 1 — quick wins (hours each)
 
+- [ ] **Alternate-shipping staging QA gate** — _Impact: High · Difficulty: Low_
+  Reload checkout with a shippable cart and confirm "Ship to a different address?" starts unchecked with its fields collapsed. Check it and confirm the fields open and validate normally; uncheck it and confirm they close and are excluded from required-field validation.
 - [ ] **Checkout-validation staging QA gate** — _Impact: High · Difficulty: Low_
-  Submit an empty checkout on desktop and mobile: each invalid field should have a restrained red border/background, inline icon/message, and focus should move to the first invalid field without the duplicated red wall above. Correct fields one by one and verify their error state clears. Also force a non-field error (terms/payment failure if available) and confirm it remains visible in the compact top summary.
+  Submit an empty checkout on desktop and mobile: no error block or replacement content may appear above the form. Only the existing invalid textboxes/selects and their existing inline messages should be emphasized, and focus should move to the first invalid field. Correct fields one by one and verify their error state clears.
 - [ ] **Side-cart single-CTA staging QA gate** — _Impact: Med · Difficulty: Low_
   After upload and cache clear, verify the drawer contains only Checkout on initial page load and after add/remove AJAX fragment refreshes. Confirm the button keeps its existing height, moves into the former first-button position, spans the drawer width, and navigates to checkout.
 - [ ] **Product-media staging QA gate** — _Impact: High · Difficulty: Low_
@@ -112,12 +122,16 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ## Done
 
+### 2026-08-19 — alternate shipping address default
+
+- [x] **Optional shipping-address form collapsed by default** — `woocommerce_ship_to_different_address_checked` now returns false via the modular WooCommerce integration. The checkbox remains interactive, but customers no longer see a duplicate address form unless they explicitly request delivery to another address.
+
 ### 2026-08-19 — checkout validation UX
 
-- [x] **Duplicate field-error wall removed** — new checkout-only `js/woocommerce/checkout-validation-ui.js` compares the page-level notice list with existing inline field messages and removes only duplicates. Critical non-field errors such as payment failures remain visible.
+- [x] **Complete top error wall removed** — checkout-only `js/woocommerce/checkout-validation-ui.js` removes the entire `.woocommerce-NoticeGroup-checkout`; matching CSS prevents the legacy block from flashing before JS runs. No summary replacement is added above the form.
 - [x] **Invalid fields made clear without visual noise** — `css/edits.css` adds a muted red border, very light red background, restrained focus ring, burgundy label/message text, and a small circular `!` marker. No flashing or oversized treatment.
 - [x] **Validation accessibility improved** — the first invalid field receives scroll/focus after `checkout_error`; `aria-invalid` and `aria-describedby` are synchronized with each field's inline message and cleaned when the field becomes valid.
-- [x] **General errors restyled safely** — any error without an inline field equivalent stays at the top as a compact pale alert rather than the legacy solid-red block.
+- [x] **No new form controls introduced** — the treatment targets only WooCommerce's existing billing/shipping textboxes, selects, and inline error text.
 
 ### 2026-08-19 — side-cart CTA cleanup
 

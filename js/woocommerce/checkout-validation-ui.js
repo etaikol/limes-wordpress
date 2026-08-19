@@ -2,38 +2,11 @@
  * Checkout validation presentation.
  *
  * WooCommerce already creates inline field errors and marks invalid rows.
- * This keeps those messages accessible, removes only duplicated entries from
- * the page-level summary, and moves focus to the first invalid field.
+ * This removes the duplicated page-level summary, keeps the existing inline
+ * messages accessible, and moves focus to the first invalid field.
  */
 (function ($) {
   'use strict';
-
-  function normalizeMessage(value) {
-    return $.trim(value || '').replace(/\s+/g, ' ');
-  }
-
-  function removeDuplicateSummaryErrors($checkout) {
-    var inlineMessages = {};
-
-    $checkout.find('.form-row .woocommerce-error').each(function () {
-      var message = normalizeMessage($(this).text());
-      if (message) inlineMessages[message] = true;
-    });
-
-    $('.woocommerce-NoticeGroup-checkout').each(function () {
-      var $group = $(this);
-
-      $group.find('li').each(function () {
-        if (inlineMessages[normalizeMessage($(this).text())]) {
-          $(this).remove();
-        }
-      });
-
-      if (!$group.find('li').length && !normalizeMessage($group.text())) {
-        $group.remove();
-      }
-    });
-  }
 
   function syncField($row) {
     var $control = $row.find('input:not([type="hidden"]), select, textarea').first();
@@ -71,8 +44,8 @@
     var $checkout = $('form.woocommerce-checkout');
     if (!$checkout.length) return;
 
-    // Remove repeated field messages while preserving payment/general errors.
-    removeDuplicateSummaryErrors($checkout);
+    // The same field messages already exist beside their controls.
+    $('.woocommerce-NoticeGroup-checkout').remove();
 
     var $invalidRows = $checkout.find('.form-row.woocommerce-invalid');
     $invalidRows.each(function () {
