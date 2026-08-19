@@ -8,11 +8,11 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 
 ## Session state (last updated 2026-08-19)
 
-- **Branch:** `dev`. Current HEAD: `a2a2396`, synced with `origin/dev` and deployed to the dev server before the checkout-page detection hotfix below.
-- **Current work (2026-08-19):** fixed the checkout validation correction after browser QA showed the top wall still visible and the fields unstyled. WooCommerce 10.3.8 renders its existing field-level text as `.checkout-inline-error-message` and may mark a populated server-rejected control only with `aria-invalid="true"`; the previous CSS targeted `.woocommerce-error` and invalid row classes only. The hotfix now targets WooCommerce's actual inline markup/ARIA state, removes the top group without a body-class dependency, and adds resilient checkout asset detection.
-- **Validation completed locally:** a real dev cart/checkout session confirmed the page loads `checkout-validation-ui.js?ver=1.0.1` and `edits.css?ver=1.0.5`. A direct invalid checkout request confirmed every field error arrives with `data-id`, and the deployed WooCommerce source confirmed it already creates `.checkout-inline-error-message` beside the matching existing control before the custom handler runs. A headless Edge fixture passed with 0 top notice groups, exactly 1 native inline message, 1 invalid row, and a computed 2px invalid-field border. The hotfix creates no new form controls or error copy.
+- **Branch:** `dev`, synchronized with `origin/dev`. The latest checkout correction is pushed; the dev server still needs to pull/deploy it.
+- **Current work (2026-08-19):** browser QA after deploying `3718aca` exposed a second rendering path: after refresh, the field errors can appear directly as `ul.woocommerce-error` without `.woocommerce-NoticeGroup-checkout`. The follow-up now hides/removes both forms, maps each `data-id` to the existing field, and moves the same message below that field only when WooCommerce has not already created its native inline copy.
+- **Validation completed locally:** the deployed dev server was confirmed to serve `checkout-validation-ui.js?ver=1.1.0` and `edits.css?ver=1.0.6`, proving deployment/cache was not the remaining cause. A headless Edge fixture for the direct `ul.woocommerce-error` path passed with 0 summary lists, exactly 1 inline message, 1 invalid row, and a computed 2px invalid-field border. No form control or duplicate message is created.
 - **Validation limitation:** this machine has no `node` or `php` executable, so JS/PHP parser checks could not run. Browser QA on dev is still required after upload and cache clear.
-- **Server state before this hotfix:** `a2a2396` was pulled and deployed successfully by the user; the three current hotfix files below have not yet been deployed.
+- **Server state before this hotfix:** `3718aca` was pulled/deployed successfully and its new asset versions were verified over HTTP; the three current follow-up files below still need deployment.
 - **Older deployment note to verify:** the 2026-04-18/19 session recorded `css/style.css`, `js/product-card-lightbox.js`, and `template-parts/top-inner.php` as still needing SFTP upload; confirm current server state before replaying old uploads.
 - **Banner verdict:** **A is the winner** (current default). **B is dropped.** **C is parked** as a possible future option. Cleanup task below.
 - **Body-zoom hack:** ✅ verified — `minZoom: 1` works as intended. Stop treating this as "needs verification".
@@ -31,21 +31,21 @@ This is the chronological record of the QA/UX work completed throughout the curr
    - Removed only the drawer's redundant View cart button at render time, including AJAX fragments.
    - Kept Checkout as the single full-width brown CTA at its original height; it naturally moves into the first button position.
    - Preserved WooCommerce's default buttons in any mini-cart outside the custom drawer.
-3. **Checkout validation UX** — committed as `423e765`, corrected in `a2a2396`, with a follow-up detection hotfix now local after browser QA.
+3. **Checkout validation UX** — committed as `423e765`, corrected in `a2a2396` and `3718aca`, with a direct-list rendering follow-up after another browser QA pass.
    - Removes the entire duplicated solid-red field-error wall; no replacement content is added above the form.
    - Added restrained burgundy borders/text, pale error backgrounds, a small `!` marker, focus ring, first-error scroll/focus, and ARIA linkage.
-   - Uses only the existing checkout controls and WooCommerce's native `.checkout-inline-error-message`; no input, duplicate message, or other form control is created.
+   - Uses only the existing checkout controls and WooCommerce's native `.checkout-inline-error-message`; on server-rendered refreshes where only the top list exists, the same message is moved below its field once. No input, duplicate message, or other form control is created.
    - The hotfix styles both invalid-row classes and `aria-invalid="true"`, removes the body-class dependency, and loads the checkout JS via `is_checkout()`, page slug, or checkout shortcode detection.
 4. **Alternate shipping-address default** — committed and deployed in `a2a2396`; browser recheck still required.
    - WooCommerce previously derived the checkbox default from `woocommerce_ship_to_destination`; when set to `shipping`, the full alternate-address form opened automatically.
    - Added a scoped WooCommerce filter so the checkbox starts unchecked and the fields stay collapsed until the customer explicitly opts in.
-5. **Deployment state** — `a2a2396` was deployed to the dev server. The follow-up checkout-page detection hotfix below still requires commit/push, server pull/deploy, cache clear, and browser QA.
+5. **Deployment state** — `3718aca` was deployed and verified. The direct-list follow-up below is pushed to `origin/dev` but still requires server pull/deploy, cache clear, and browser QA.
 
 ### Upload list for the current 2026-08-19 corrections (SFTP → clear WP Rocket)
 
-1. `js/woocommerce/checkout-validation-ui.js` — maps `data-id` entries to invalid rows, reuses WooCommerce's native inline messages, removes the top group, and keeps focus/ARIA behavior
-2. `css/edits.css` — hides the top group without a body-class dependency and styles native inline messages plus invalid controls/ARIA state
-3. `inc/core/enqueue-scripts.php` — recognizes checkout by Woo condition, slug, or shortcode; cache-busts validation JS to `1.1.0` and edits CSS to `1.0.6`
+1. `js/woocommerce/checkout-validation-ui.js` — handles both wrapped and direct summary lists, maps `data-id` to existing fields, and keeps focus/ARIA behavior
+2. `css/edits.css` — immediately hides both `.woocommerce-NoticeGroup-checkout` and checkout-level `ul.woocommerce-error`; existing field/error styling remains
+3. `inc/core/enqueue-scripts.php` — cache-busts validation JS to `1.1.1` and edits CSS to `1.0.7`
 
 ### Superseded upload list: original 2026-08-19 checkout-validation UX (`423e765`)
 

@@ -24,21 +24,37 @@
   }
 
   function markSummaryFieldsInvalid() {
-    $('.woocommerce-NoticeGroup-checkout').each(function () {
-      var $noticeGroup = $(this);
+    var $summaryLists = $(
+      'body.woocommerce-checkout ul.woocommerce-error, ' +
+      'form.checkout.woocommerce-checkout ul.woocommerce-error, ' +
+      '.woocommerce-NoticeGroup-checkout ul.woocommerce-error'
+    );
 
-      $noticeGroup.find('.woocommerce-error li[data-id]').each(function () {
-        var $row = fieldRow($(this).attr('data-id'));
+    $summaryLists.find('li[data-id]').each(function () {
+      var $notice = $(this);
+      var fieldId = $notice.attr('data-id');
+      var $row = fieldRow(fieldId);
 
-        if (!$row.length) return;
+      if (!$row.length) return;
 
-        $row
-          .removeClass('woocommerce-validated')
-          .addClass('woocommerce-invalid woocommerce-invalid-required-field');
-      });
+      $row
+        .removeClass('woocommerce-validated')
+        .addClass('woocommerce-invalid woocommerce-invalid-required-field');
 
-      $noticeGroup.remove();
+      // AJAX checkout already creates this beside the field. A refreshed
+      // server-rendered checkout may only contain the top list, so move the
+      // same text beside the existing control when the inline copy is absent.
+      if (!$row.find('.checkout-inline-error-message').length) {
+        $('<p>', {
+          'id': fieldId + '_description',
+          'class': 'checkout-inline-error-message',
+          'text': $.trim($notice.text()).replace(/\s+/g, ' ')
+        }).appendTo($row);
+      }
     });
+
+    $summaryLists.remove();
+    $('.woocommerce-NoticeGroup-checkout').remove();
 
     // WooCommerce 10.x already renders these messages beside the existing
     // controls. Mirror their state onto the row for consistent label styling.

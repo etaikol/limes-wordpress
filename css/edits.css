@@ -171,7 +171,9 @@ form.cart.dimensions-required.price-invalid .wc-pao-subtotal-line p.price::after
 
 /* Checkout validation: remove the duplicated top list; errors stay beside existing fields.
    Keep this independent of body classes so it also survives stale page/cache metadata. */
-.woocommerce-NoticeGroup-checkout {
+.woocommerce-NoticeGroup-checkout,
+body.woocommerce-checkout ul.woocommerce-error,
+form.checkout.woocommerce-checkout ul.woocommerce-error {
 	display: none !important;
 }
 

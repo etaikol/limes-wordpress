@@ -64,7 +64,7 @@ function limes_enqueue_scripts() {
                 'limes-checkout-validation-ui',
                 get_template_directory_uri() . '/js/woocommerce/checkout-validation-ui.js',
                 array('jquery', 'wc-checkout'),
-                '1.1.0',
+                '1.1.1',
                 true
             );
         }
@@ -233,7 +233,7 @@ function limes_dynamic_css() {
     // URLs to the CSS files
     $edits_css_url = get_template_directory_uri() . '/css/edits.css';
     $admin_css_url = get_template_directory_uri() . '/css/admin-edits.css';
-    $version = '1.0.6';
+    $version = '1.0.7';
 
     // Enqueue the main stylesheet for all users
     wp_enqueue_style('theme-edits-css', $edits_css_url, array(), $version);
