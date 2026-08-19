@@ -8,16 +8,43 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 
 ## Session state (last updated 2026-08-19)
 
-- **Branch:** `dev`. Current local HEAD includes the 2026-08-18 product-image QA fix; the side-cart CTA fix below is local and uncommitted.
-- **Current work (2026-08-19):** removed the redundant View cart CTA from the slide-out cart only. Checkout remains the single full-width CTA at its existing size and naturally occupies the first button position.
-- **Validation completed locally:** `git diff --check` passes; no catalog zoom selectors/handlers remain; fixed gallery widths/heights (`720/620px`, `560/480px`) are gone.
+- **Branch:** `dev`. Current HEAD: `8f4f02a` (side-cart View cart CTA removed), synced with `origin/dev` before the checkout-validation work below.
+- **Current work (2026-08-19):** redesigned classic-checkout validation: duplicate field errors are removed from the page-level summary, invalid fields receive restrained inline red treatment, and focus moves to the first invalid control. General/payment errors remain visible in a compact summary.
+- **Validation completed locally:** `git diff --check` passes; the checkout script is scoped to classic checkout, removes only summary entries duplicated inline, and preserves unmatched general/payment errors.
 - **Validation limitation:** this machine has no `node` or `php` executable, so JS/PHP parser checks could not run. Browser QA on dev is still required after upload and cache clear.
-- **Working tree before this fix:** clean. The five modified files listed by `git status` belong to this task.
+- **Working tree before this fix:** clean. The three code files plus `PROGRESS.md` listed by `git status` belong to this task.
 - **Older deployment note to verify:** the 2026-04-18/19 session recorded `css/style.css`, `js/product-card-lightbox.js`, and `template-parts/top-inner.php` as still needing SFTP upload; confirm current server state before replaying old uploads.
 - **Banner verdict:** **A is the winner** (current default). **B is dropped.** **C is parked** as a possible future option. Cleanup task below.
 - **Body-zoom hack:** ✅ verified — `minZoom: 1` works as intended. Stop treating this as "needs verification".
 
-### Upload list for the 2026-08-19 side-cart CTA fix (SFTP → clear WP Rocket)
+### Conversation worklog — 2026-08-18/19
+
+This is the chronological record of the QA/UX work completed throughout the current conversation:
+
+1. **Catalog and product-gallery QA** — committed as `f41df77`.
+   - Removed catalog image enlargement and its magnifier; catalog image/card clicks now go directly to the product page.
+   - Kept image enlargement, zoom/pan, and selected-color lightbox behavior inside the product page.
+   - Removed the desktop gallery's `720px`/`620px` caps and fixed `560px`/`480px` heights.
+   - Restored full-width proportional images with `height: auto` and `object-fit: contain`, fixing laptop whitespace and iPhone crop.
+   - Updated asset cache-busting and documented a cross-device staging QA gate.
+2. **Slide-out cart CTA cleanup** — committed as `8f4f02a` and pushed to `origin/dev`.
+   - Removed only the drawer's redundant View cart button at render time, including AJAX fragments.
+   - Kept Checkout as the single full-width brown CTA at its original height; it naturally moves into the first button position.
+   - Preserved WooCommerce's default buttons in any mini-cart outside the custom drawer.
+3. **Checkout validation UX** — implemented locally; not yet committed or uploaded.
+   - Replaced the duplicated solid-red field-error wall with inline invalid-field treatment.
+   - Added restrained burgundy borders/text, pale error backgrounds, a small `!` marker, focus ring, first-error scroll/focus, and ARIA linkage.
+   - Deduplicates only field messages; unmatched payment/general errors remain visible as a compact top alert.
+   - Added checkout-only JS, CSS cache-busting, and a dedicated staging QA gate.
+4. **Deployment state** — the checkout-validation files listed immediately below still require SFTP upload, WP Rocket cache clear, and browser QA before live deployment.
+
+### Upload list for the 2026-08-19 checkout-validation UX fix (SFTP → clear WP Rocket)
+
+1. `js/woocommerce/checkout-validation-ui.js` — new: deduplicates field errors, preserves general errors, manages focus and ARIA state
+2. `css/edits.css` — refined invalid-field, inline-message, focus-ring, and compact general-error styles
+3. `inc/core/enqueue-scripts.php` — checkout-only script enqueue; `css/edits.css` cache-bust bumped to `1.0.4`
+
+### Previous upload list: 2026-08-19 side-cart CTA fix (`8f4f02a`)
 
 1. `header.php` — initial drawer render uses the side-cart-only renderer
 2. `inc/woocommerce/woocommerce-integration.php` — removes View cart only while rendering the drawer, including AJAX fragments
@@ -51,6 +78,8 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ### Tier 1 — quick wins (hours each)
 
+- [ ] **Checkout-validation staging QA gate** — _Impact: High · Difficulty: Low_
+  Submit an empty checkout on desktop and mobile: each invalid field should have a restrained red border/background, inline icon/message, and focus should move to the first invalid field without the duplicated red wall above. Correct fields one by one and verify their error state clears. Also force a non-field error (terms/payment failure if available) and confirm it remains visible in the compact top summary.
 - [ ] **Side-cart single-CTA staging QA gate** — _Impact: Med · Difficulty: Low_
   After upload and cache clear, verify the drawer contains only Checkout on initial page load and after add/remove AJAX fragment refreshes. Confirm the button keeps its existing height, moves into the former first-button position, spans the drawer width, and navigates to checkout.
 - [ ] **Product-media staging QA gate** — _Impact: High · Difficulty: Low_
@@ -82,6 +111,13 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 ---
 
 ## Done
+
+### 2026-08-19 — checkout validation UX
+
+- [x] **Duplicate field-error wall removed** — new checkout-only `js/woocommerce/checkout-validation-ui.js` compares the page-level notice list with existing inline field messages and removes only duplicates. Critical non-field errors such as payment failures remain visible.
+- [x] **Invalid fields made clear without visual noise** — `css/edits.css` adds a muted red border, very light red background, restrained focus ring, burgundy label/message text, and a small circular `!` marker. No flashing or oversized treatment.
+- [x] **Validation accessibility improved** — the first invalid field receives scroll/focus after `checkout_error`; `aria-invalid` and `aria-describedby` are synchronized with each field's inline message and cleaned when the field becomes valid.
+- [x] **General errors restyled safely** — any error without an inline field equivalent stays at the top as a compact pale alert rather than the legacy solid-red block.
 
 ### 2026-08-19 — side-cart CTA cleanup
 

@@ -169,6 +169,111 @@ form.cart.dimensions-required.price-invalid .wc-pao-subtotal-line p.price::after
 	margin: 0px 0 20px 0;
 }
 
+/* Checkout validation: field errors stay inline; non-field errors remain as a compact summary. */
+body.woocommerce-checkout .woocommerce-NoticeGroup-checkout {
+	width: 100%;
+	margin: 0 0 24px;
+}
+
+body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error {
+	position: relative;
+	width: 100%;
+	margin: 0;
+	padding: 14px 44px 14px 18px;
+	border: 1px solid #efcfcc;
+	border-right: 4px solid #b9473f;
+	border-radius: 4px;
+	background: #fff9f8;
+	color: #7f2c27;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.5;
+	list-style: none;
+	box-sizing: border-box;
+}
+
+body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error::before {
+	content: "!";
+	position: absolute;
+	top: 15px;
+	right: 16px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background: #b9473f;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error li {
+	margin: 0;
+	list-style: none;
+}
+
+body.woocommerce-checkout .woocommerce-NoticeGroup-checkout .woocommerce-error li + li {
+	margin-top: 5px;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid {
+	position: relative;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid > label {
+	color: #8f302b;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid input.input-text,
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid textarea,
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid .select2-selection {
+	border: 2px solid #b9473f !important;
+	background-color: #fff9f8 !important;
+	box-shadow: 0 0 0 3px rgba(185, 71, 63, 0.1) !important;
+	transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid input.input-text:focus,
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid textarea:focus,
+body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid .select2-container--focus .select2-selection {
+	border-color: #96362f !important;
+	box-shadow: 0 0 0 4px rgba(185, 71, 63, 0.17) !important;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row .woocommerce-error {
+	position: relative;
+	display: block;
+	width: auto;
+	margin: 7px 2px 0 0;
+	padding: 0 23px 0 0;
+	background: transparent;
+	color: #8f302b;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+body.woocommerce-checkout form.woocommerce-checkout .form-row .woocommerce-error::before {
+	content: "!";
+	position: absolute;
+	top: 2px;
+	right: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #b9473f;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
 
 section.product div.product-addon-totals {
 	margin-bottom: 20px;

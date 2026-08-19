@@ -46,6 +46,16 @@ function limes_enqueue_scripts() {
             wp_enqueue_script('wc-cart');
         }
 
+        if (function_exists('is_checkout') && is_checkout()) {
+            wp_enqueue_script(
+                'limes-checkout-validation-ui',
+                get_template_directory_uri() . '/js/woocommerce/checkout-validation-ui.js',
+                array('jquery', 'wc-checkout'),
+                '1.0.0',
+                true
+            );
+        }
+
         // Product-page lightbox (zoom + pan) plus whole-card navigation in shop/category loops.
         if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag() || is_product())) {
             wp_enqueue_script('limes-product-card-lightbox', get_template_directory_uri() . '/js/product-card-lightbox.js', array('jquery'), '2.4.0', true);
@@ -210,7 +220,7 @@ function limes_dynamic_css() {
     // URLs to the CSS files
     $edits_css_url = get_template_directory_uri() . '/css/edits.css';
     $admin_css_url = get_template_directory_uri() . '/css/admin-edits.css';
-    $version = '1.0.3';
+    $version = '1.0.4';
 
     // Enqueue the main stylesheet for all users
     wp_enqueue_style('theme-edits-css', $edits_css_url, array(), $version);
