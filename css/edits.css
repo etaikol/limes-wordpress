@@ -169,36 +169,44 @@ form.cart.dimensions-required.price-invalid .wc-pao-subtotal-line p.price::after
 	margin: 0px 0 20px 0;
 }
 
-/* Checkout validation: remove the duplicated top list; errors stay beside existing fields. */
-body.woocommerce-checkout .woocommerce-NoticeGroup-checkout {
+/* Checkout validation: remove the duplicated top list; errors stay beside existing fields.
+   Keep this independent of body classes so it also survives stale page/cache metadata. */
+.woocommerce-NoticeGroup-checkout {
 	display: none !important;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid {
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid {
 	position: relative;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid > label {
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid > label {
 	color: #8f302b;
+	font-weight: 700;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid input.input-text,
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid textarea,
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid .select2-selection {
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid input.input-text,
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid textarea,
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid .select2-selection,
+form.checkout.woocommerce-checkout .form-row input[aria-invalid="true"],
+form.checkout.woocommerce-checkout .form-row textarea[aria-invalid="true"],
+form.checkout.woocommerce-checkout .form-row select[aria-invalid="true"] + .select2 .select2-selection {
 	border: 2px solid #b9473f !important;
 	background-color: #fff9f8 !important;
 	box-shadow: 0 0 0 3px rgba(185, 71, 63, 0.1) !important;
 	transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid input.input-text:focus,
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid textarea:focus,
-body.woocommerce-checkout form.woocommerce-checkout .form-row.woocommerce-invalid .select2-container--focus .select2-selection {
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid input.input-text:focus,
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid textarea:focus,
+form.checkout.woocommerce-checkout .form-row.woocommerce-invalid .select2-container--focus .select2-selection,
+form.checkout.woocommerce-checkout .form-row input[aria-invalid="true"]:focus,
+form.checkout.woocommerce-checkout .form-row textarea[aria-invalid="true"]:focus {
 	border-color: #96362f !important;
 	box-shadow: 0 0 0 4px rgba(185, 71, 63, 0.17) !important;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row .woocommerce-error {
+form.checkout.woocommerce-checkout .form-row .woocommerce-error,
+form.checkout.woocommerce-checkout .form-row .checkout-inline-error-message {
 	position: relative;
 	display: block;
 	width: auto;
@@ -211,7 +219,8 @@ body.woocommerce-checkout form.woocommerce-checkout .form-row .woocommerce-error
 	line-height: 1.4;
 }
 
-body.woocommerce-checkout form.woocommerce-checkout .form-row .woocommerce-error::before {
+form.checkout.woocommerce-checkout .form-row .woocommerce-error::before,
+form.checkout.woocommerce-checkout .form-row .checkout-inline-error-message::before {
 	content: "!";
 	position: absolute;
 	top: 2px;

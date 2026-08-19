@@ -1,12 +1,54 @@
 /**
  * Checkout validation presentation.
  *
- * WooCommerce already creates inline field errors and marks invalid rows.
- * This removes the duplicated page-level summary, keeps the existing inline
- * messages accessible, and moves focus to the first invalid field.
+ * WooCommerce already creates inline field errors and exposes each server
+ * error's field id. This mirrors that state onto the existing form row,
+ * removes the duplicated page-level summary, and focuses the first error.
  */
 (function ($) {
   'use strict';
+
+  function fieldRow(fieldId) {
+    if (!fieldId) return $();
+
+    var safeId = window.CSS && window.CSS.escape
+      ? window.CSS.escape(fieldId)
+      : fieldId.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
+    var $row = $('#' + safeId + '_field');
+
+    if (!$row.length) {
+      $row = $('#' + safeId).closest('.form-row');
+    }
+
+    return $row;
+  }
+
+  function markSummaryFieldsInvalid() {
+    $('.woocommerce-NoticeGroup-checkout').each(function () {
+      var $noticeGroup = $(this);
+
+      $noticeGroup.find('.woocommerce-error li[data-id]').each(function () {
+        var $row = fieldRow($(this).attr('data-id'));
+
+        if (!$row.length) return;
+
+        $row
+          .removeClass('woocommerce-validated')
+          .addClass('woocommerce-invalid woocommerce-invalid-required-field');
+      });
+
+      $noticeGroup.remove();
+    });
+
+    // WooCommerce 10.x already renders these messages beside the existing
+    // controls. Mirror their state onto the row for consistent label styling.
+    $('form.woocommerce-checkout .checkout-inline-error-message').each(function () {
+      $(this)
+        .closest('.form-row')
+        .removeClass('woocommerce-validated')
+        .addClass('woocommerce-invalid woocommerce-invalid-required-field');
+    });
+  }
 
   function syncField($row) {
     var $control = $row.find('input:not([type="hidden"]), select, textarea').first();
@@ -15,11 +57,11 @@
     var isInvalid = $row.hasClass('woocommerce-invalid');
     $control.attr('aria-invalid', isInvalid ? 'true' : 'false');
 
-    var $error = $row.find('.woocommerce-error').first();
+    var $error = $row.find('.checkout-inline-error-message, .woocommerce-error').first();
     var controlId = $control.attr('id');
     if (!controlId) return;
 
-    var errorId = controlId + '_error';
+    var errorId = $error.attr('id') || controlId + '_error';
     var describedBy = ($control.attr('aria-describedby') || '').split(/\s+/).filter(Boolean);
 
     if (!$error.length || !isInvalid) {
@@ -44,8 +86,9 @@
     var $checkout = $('form.woocommerce-checkout');
     if (!$checkout.length) return;
 
-    // The same field messages already exist beside their controls.
-    $('.woocommerce-NoticeGroup-checkout').remove();
+    // WooCommerce already renders the field messages beside the existing
+    // controls. Mark those rows and remove only the duplicated top wall.
+    markSummaryFieldsInvalid();
 
     var $invalidRows = $checkout.find('.form-row.woocommerce-invalid');
     $invalidRows.each(function () {
