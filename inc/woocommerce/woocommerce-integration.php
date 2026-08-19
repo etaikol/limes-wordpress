@@ -206,13 +206,36 @@ class Limes_WooCommerce_Integration {
     }
 
     /**
+     * Render the side-cart mini-cart with Checkout as its only CTA.
+     *
+     * WooCommerce adds both View cart and Checkout through a global action.
+     * Temporarily remove only the View cart callback so other mini-carts keep
+     * their default buttons.
+     */
+    public static function render_side_cart() {
+        $hook = 'woocommerce_widget_shopping_cart_buttons';
+        $callback = 'woocommerce_widget_shopping_cart_button_view_cart';
+        $view_cart_priority = has_action($hook, $callback);
+
+        if (false !== $view_cart_priority) {
+            remove_action($hook, $callback, $view_cart_priority);
+        }
+
+        woocommerce_mini_cart();
+
+        if (false !== $view_cart_priority) {
+            add_action($hook, $callback, $view_cart_priority);
+        }
+    }
+
+    /**
      * Register side-cart drawer as a WC fragment so it refreshes on every cart change
      */
     public static function side_cart_fragment( $fragments ) {
         ob_start();
         ?>
         <div class="widget_shopping_cart_content">
-            <?php woocommerce_mini_cart(); ?>
+            <?php self::render_side_cart(); ?>
         </div>
         <?php
         $fragments['div.widget_shopping_cart_content'] = ob_get_clean();

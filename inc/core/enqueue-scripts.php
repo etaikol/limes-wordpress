@@ -210,7 +210,7 @@ function limes_dynamic_css() {
     // URLs to the CSS files
     $edits_css_url = get_template_directory_uri() . '/css/edits.css';
     $admin_css_url = get_template_directory_uri() . '/css/admin-edits.css';
-    $version = '1.0.2';
+    $version = '1.0.3';
 
     // Enqueue the main stylesheet for all users
     wp_enqueue_style('theme-edits-css', $edits_css_url, array(), $version);

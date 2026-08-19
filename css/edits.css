@@ -1005,18 +1005,6 @@ section.product .sliders .gallery-top .swiper-slide img {
   background: #6a5040;
   border-color: #6a5040;
 }
-/* View cart = outline */
-.limes-side-cart .woocommerce-mini-cart__buttons a:not(.checkout) {
-  background: transparent;
-  color: #7e624d;
-  border: 1.5px solid #b29076;
-}
-.limes-side-cart .woocommerce-mini-cart__buttons a:not(.checkout):hover {
-  background: #b29076;
-  color: #fff;
-  border-color: #b29076;
-}
-
 /* Empty cart message */
 .limes-side-cart .woocommerce-mini-cart__empty-message {
   padding: 50px 20px;

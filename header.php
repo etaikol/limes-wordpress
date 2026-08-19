@@ -210,7 +210,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	</div>
 	<div class="side-cart__body">
 		<div class="widget_shopping_cart_content">
-			<?php woocommerce_mini_cart(); ?>
+			<?php Limes_WooCommerce_Integration::render_side_cart(); ?>
 		</div>
 	</div>
 </div>

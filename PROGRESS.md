@@ -6,10 +6,10 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 
 ---
 
-## Session state (last updated 2026-08-18)
+## Session state (last updated 2026-08-19)
 
-- **Branch:** `dev`. Current local HEAD: `05b4ebc`; the product-image QA fix below is local and uncommitted.
-- **Current work (2026-08-18):** removed catalog-card image enlargement and restored full-width, uncropped product images on desktop and mobile (see Done section).
+- **Branch:** `dev`. Current local HEAD includes the 2026-08-18 product-image QA fix; the side-cart CTA fix below is local and uncommitted.
+- **Current work (2026-08-19):** removed the redundant View cart CTA from the slide-out cart only. Checkout remains the single full-width CTA at its existing size and naturally occupies the first button position.
 - **Validation completed locally:** `git diff --check` passes; no catalog zoom selectors/handlers remain; fixed gallery widths/heights (`720/620px`, `560/480px`) are gone.
 - **Validation limitation:** this machine has no `node` or `php` executable, so JS/PHP parser checks could not run. Browser QA on dev is still required after upload and cache clear.
 - **Working tree before this fix:** clean. The five modified files listed by `git status` belong to this task.
@@ -17,7 +17,14 @@ Active spec: `../שדרוג אתר לימס.pdf`. Branch: `dev`.
 - **Banner verdict:** **A is the winner** (current default). **B is dropped.** **C is parked** as a possible future option. Cleanup task below.
 - **Body-zoom hack:** ✅ verified — `minZoom: 1` works as intended. Stop treating this as "needs verification".
 
-### Upload list for the 2026-08-18 product-image QA fix (SFTP → clear WP Rocket)
+### Upload list for the 2026-08-19 side-cart CTA fix (SFTP → clear WP Rocket)
+
+1. `header.php` — initial drawer render uses the side-cart-only renderer
+2. `inc/woocommerce/woocommerce-integration.php` — removes View cart only while rendering the drawer, including AJAX fragments
+3. `css/edits.css` — obsolete outline View cart styles removed; Checkout sizing remains unchanged
+4. `inc/core/enqueue-scripts.php` — `css/edits.css` cache-bust bumped to `1.0.3`
+
+### Previous upload list: 2026-08-18 product-image QA fix
 
 1. `js/product-card-lightbox.js` — catalog zoom injection/handlers removed; product-page gallery and swatch lightbox retained
 2. `css/style.css` — obsolete catalog magnifier and catalog-only lightbox styles removed
@@ -44,6 +51,8 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ### Tier 1 — quick wins (hours each)
 
+- [ ] **Side-cart single-CTA staging QA gate** — _Impact: Med · Difficulty: Low_
+  After upload and cache clear, verify the drawer contains only Checkout on initial page load and after add/remove AJAX fragment refreshes. Confirm the button keeps its existing height, moves into the former first-button position, spans the drawer width, and navigates to checkout.
 - [ ] **Product-media staging QA gate** — _Impact: High · Difficulty: Low_
   After SFTP upload and WP Rocket cache clear, verify: (1) catalog image/card clicks navigate directly to the product page and no magnifier appears; (2) desktop/laptop gallery fills its column without side whitespace; (3) iPhone and Android show the complete product image without crop; (4) Swiper arrows, pagination, swipe, product-page lightbox, zoom/pan, and selected-color swatch lightbox still work. Test at least one landscape, portrait, and square source image.
 - [x] **Slide-in side-cart on "Add to cart"** — _committed 2026-04-20, see Done_
@@ -74,6 +83,12 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ## Done
 
+### 2026-08-19 — side-cart CTA cleanup
+
+- [x] **Redundant View cart CTA removed from the slide-out cart** — added a scoped renderer in `inc/woocommerce/woocommerce-integration.php` that temporarily removes WooCommerce's `woocommerce_widget_shopping_cart_button_view_cart` callback only while the custom drawer is rendered. Both the initial render in `header.php` and AJAX cart fragments use it; other mini-carts retain WooCommerce defaults.
+- [x] **Checkout remains the sole, restrained CTA** — its existing full-width brown styling and height are unchanged. With the first button removed, Checkout naturally moves into the former View cart position rather than expanding to the combined height of both buttons.
+- [x] **Obsolete drawer-only View cart CSS removed** — `css/edits.css`; stylesheet cache-bust bumped to `1.0.3`.
+
 ### 2026-08-18 — product-image QA fixes
 
 - [x] **Catalog image enlargement removed** — `js/product-card-lightbox.js` no longer injects `.limes-card-zoom` or intercepts catalog images for a preview. The native image link and the whole-card handler both navigate to the product page. Product-page gallery and color-swatch lightbox triggers remain active.
@@ -83,7 +98,7 @@ Working backlog ordered by ROI (impact / effort), not PDF order. When an item sh
 
 ### 2026-04-20 — side-cart + toast
 
-- [x] **Slide-in side-cart drawer** — `js/woocommerce/side-cart.js` (new), `header.php` (overlay + `#limes-side-cart` + `#limes-toast` HTML), `inc/woocommerce/woocommerce-integration.php` (`side_cart_fragment` filter keeps content fresh via WC fragments), `inc/core/enqueue-scripts.php` (enqueued sitewide, depends on `wc-cart-fragments`). Slides in from the visual left (inline-end in RTL = where the cart icon lives). `#B29076` brown header bar, thumbnail + name + qty × price per item, subtotal row, filled checkout CTA + outline view-cart link. Opens on `added_to_cart` event and on cart icon click. Overlay click / × / Esc close.
+- [x] **Slide-in side-cart drawer** — `js/woocommerce/side-cart.js` (new), `header.php` (overlay + `#limes-side-cart` + `#limes-toast` HTML), `inc/woocommerce/woocommerce-integration.php` (`side_cart_fragment` filter keeps content fresh via WC fragments), `inc/core/enqueue-scripts.php` (enqueued sitewide, depends on `wc-cart-fragments`). Slides in from the visual left (inline-end in RTL = where the cart icon lives). `#B29076` brown header bar, thumbnail + name + qty × price per item, subtotal row, and checkout CTA. Opens on `added_to_cart` event and on cart icon click. Overlay click / × / Esc close. **CTA note:** the original outline View cart link was removed by the 2026-08-19 QA decision.
 - [x] **3-second add-to-cart toast** — small white pill, `border-top: 3px solid #B29076`, brown ✓ checkmark + "נוסף לסל הקניות" text. Fixed `bottom: 34px; left: 50%` (bottom-center). Fades in on `added_to_cart` event, auto-hides after 3 s. Replaces the old ugly WC banner: `ajax-add-to-cart.js` `showSuccessMessage()` gutted; `success-message.js` scroll + notice handler removed.
 
 ### 2026-04-18/19 polish arc
